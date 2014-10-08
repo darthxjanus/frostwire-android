@@ -21,7 +21,6 @@ package com.frostwire.android.gui.tasks;
 import android.content.Context;
 
 import com.frostwire.android.R;
-import com.frostwire.android.gui.transfers.BittorrentDownload;
 import com.frostwire.android.gui.transfers.ExistingDownload;
 import com.frostwire.android.gui.transfers.InvalidTransfer;
 import com.frostwire.android.gui.transfers.TransferManager;
@@ -29,6 +28,7 @@ import com.frostwire.android.gui.util.UIUtils;
 import com.frostwire.android.gui.views.ContextTask;
 import com.frostwire.logging.Logger;
 import com.frostwire.search.SearchResult;
+import com.frostwire.transfers.BittorrentDownload;
 import com.frostwire.transfers.DownloadTransfer;
 
 /**

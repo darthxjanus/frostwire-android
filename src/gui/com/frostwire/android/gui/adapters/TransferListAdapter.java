@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import com.frostwire.transfers.BittorrentDownload;
 import com.frostwire.transfers.DownloadTransfer;
 import com.frostwire.transfers.Transfer;
 import com.frostwire.transfers.TransferItem;
@@ -52,7 +53,6 @@ import com.frostwire.android.gui.adapters.menu.CancelMenuAction;
 import com.frostwire.android.gui.adapters.menu.OpenMenuAction;
 import com.frostwire.android.gui.adapters.menu.PauseDownloadMenuAction;
 import com.frostwire.android.gui.adapters.menu.ResumeDownloadMenuAction;
-import com.frostwire.android.gui.transfers.BittorrentDownload;
 import com.frostwire.android.gui.transfers.HttpDownload;
 import com.frostwire.android.gui.transfers.PeerHttpDownload;
 import com.frostwire.android.gui.transfers.PeerHttpUpload;
@@ -269,9 +269,9 @@ public class TransferListAdapter extends BaseExpandableListAdapter {
             }
 
             if (!download.isComplete() || ConfigurationManager.instance().getBoolean(Constants.PREF_KEY_TORRENT_SEED_FINISHED_TORRENTS)) {
-                if (download.isPausable()) {
+                if (!download.isPaused()) {
                     items.add(new PauseDownloadMenuAction(context, download));
-                } else if (download.isResumable()) {
+                } else if (download.isPaused()) {
                     boolean wifiIsUp = NetworkManager.instance().isDataWIFIUp();
                     boolean bittorrentOnMobileData = ConfigurationManager.instance().getBoolean(Constants.PREF_KEY_NETWORK_USE_MOBILE_DATA);
 
@@ -408,8 +408,8 @@ public class TransferListAdapter extends BaseExpandableListAdapter {
         TextView seeds = findView(view, R.id.view_transfer_list_item_seeds);
         TextView peers = findView(view, R.id.view_transfer_list_item_peers);
 
-        seeds.setText(context.getString(R.string.seeds_n, download.getSeeds()));
-        peers.setText(context.getString(R.string.peers_n, download.getPeers()));
+        seeds.setText(context.getString(R.string.seeds_n, download.getConnectedSeeds()));
+        peers.setText(context.getString(R.string.peers_n, download.getConnectedPeers()));
 
         title.setText(download.getDisplayName());
         progress.setProgress(download.getProgress());

@@ -28,6 +28,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import com.frostwire.android.R;
 import com.frostwire.logging.Logger;
+import com.frostwire.transfers.BittorrentDownload;
 import com.frostwire.transfers.TransferItem;
 import com.frostwire.transfers.TransferState;
 import com.frostwire.vuze.VuzeDownloadManager;
@@ -122,33 +123,35 @@ public class TorrentFetcherDownload implements BittorrentDownload {
         return delegate != null ? delegate.getETA() : 0;
     }
 
-    public String getHash() {
-        return delegate != null ? delegate.getHash() : info.getHash();
+    public String getInfoHash() {
+        return delegate != null ? delegate.getInfoHash() : info.getHash();
     }
 
-    public String getPeers() {
-        return delegate != null ? delegate.getPeers() : "";
+    @Override
+    public int getConnectedPeers() {
+        return 0;
     }
 
-    public String getSeeds() {
-        return delegate != null ? delegate.getSeeds() : "";
+    @Override
+    public int getTotalPeers() {
+        return 0;
     }
 
-    public String getSeedToPeerRatio() {
-        return delegate != null ? delegate.getSeedToPeerRatio() : "";
+    @Override
+    public int getConnectedSeeds() {
+        return 0;
     }
 
-    public String getShareRatio() {
-        return delegate != null ? delegate.getShareRatio() : "";
+    @Override
+    public int getTotalSeeds() {
+        return 0;
     }
 
-    public boolean isResumable() {
-        return delegate != null ? delegate.isResumable() : false;
+    @Override
+    public boolean isPaused() {
+        return false;
     }
 
-    public boolean isPausable() {
-        return delegate != null ? delegate.isPausable() : false;
-    }
 
     public boolean isComplete() {
         return delegate != null ? delegate.isComplete() : false;
@@ -162,6 +165,11 @@ public class TorrentFetcherDownload implements BittorrentDownload {
     @Override
     public boolean isSeeding() {
         return delegate != null ? delegate.isSeeding() : false;
+    }
+
+    @Override
+    public boolean isFinished() {
+        return false;
     }
 
     @Override
@@ -198,18 +206,16 @@ public class TorrentFetcherDownload implements BittorrentDownload {
             delegate.pause();
         }
     }
-    
-    @Override
-    public void enqueue() {
-        if (delegate != null) {
-            delegate.enqueue();
-        }
-    }
 
     public void resume() {
         if (delegate != null) {
             delegate.resume();
         }
+    }
+
+    @Override
+    public boolean isUploading() {
+        return false;
     }
 
     private final class TorrentDownloaderListener implements VuzeTorrentDownloadListener {

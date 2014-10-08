@@ -25,6 +25,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
+import com.frostwire.transfers.BittorrentDownload;
 import com.frostwire.transfers.TransferItem;
 import com.frostwire.transfers.TransferState;
 import com.frostwire.util.ByteUtils;
@@ -112,8 +113,43 @@ public final class AzureusBittorrentDownload implements BittorrentDownload {
         return downloadManager.isDownloading();
     }
 
+    @Override
+    public String getInfoHash() {
+        return null;
+    }
+
+    @Override
+    public int getConnectedPeers() {
+        return 0;
+    }
+
+    @Override
+    public int getTotalPeers() {
+        return 0;
+    }
+
+    @Override
+    public int getConnectedSeeds() {
+        return 0;
+    }
+
+    @Override
+    public int getTotalSeeds() {
+        return 0;
+    }
+
+    @Override
+    public boolean isPaused() {
+        return false;
+    }
+
     public boolean isSeeding() {
         return downloadManager.isSeeding();
+    }
+
+    @Override
+    public boolean isFinished() {
+        return false;
     }
 
     public List<TransferItem> getItems() {
@@ -228,6 +264,11 @@ public final class AzureusBittorrentDownload implements BittorrentDownload {
             return false;
         }
 
-        return getHash().equals(((BittorrentDownload) o).getHash());
+        return getInfoHash().equals(((BittorrentDownload) o).getInfoHash());
+    }
+
+    @Override
+    public boolean isUploading() {
+        return false;
     }
 }

@@ -45,6 +45,7 @@ import com.frostwire.search.soundcloud.SoundcloudSearchResult;
 import com.frostwire.search.torrent.TorrentCrawledSearchResult;
 import com.frostwire.search.torrent.TorrentSearchResult;
 import com.frostwire.search.youtube.YouTubeCrawledSearchResult;
+import com.frostwire.transfers.BittorrentDownload;
 import com.frostwire.transfers.DownloadTransfer;
 import com.frostwire.transfers.Transfer;
 import com.frostwire.transfers.UploadTransfer;
@@ -135,7 +136,7 @@ public final class TransferManager implements VuzeKeys {
     private boolean alreadyDownloadingByInfoHash(String infohash) {
         synchronized (alreadyDownloadingMonitor) {
             for (BittorrentDownload bt : bittorrentDownloads) {
-                if (bt.getHash().equalsIgnoreCase(infohash)) {
+                if (bt.getInfoHash().equalsIgnoreCase(infohash)) {
                     return true;
                 }
             }
@@ -180,7 +181,8 @@ public final class TransferManager implements VuzeKeys {
             btDownload.enqueue();
         } else if (transfer instanceof TorrentFetcherDownload){
             TorrentFetcherDownload btDownload = (TorrentFetcherDownload) transfer;
-            btDownload.enqueue();
+            // TODO:BITTORRENT
+            //btDownload.enqueue();
         }
     }
 
@@ -213,7 +215,9 @@ public final class TransferManager implements VuzeKeys {
             if (transfer != null && transfer.getProgress() == 100) {
                 if (transfer instanceof BittorrentDownload) {
                     BittorrentDownload bd = (BittorrentDownload) transfer;
-                    if (bd != null && bd.isResumable()) {
+                    // TODO:BITTORRENT
+                    // review ispaused here
+                    if (bd != null && bd.isPaused()) {
                         bd.remove();
                     }
                 } else {
@@ -356,7 +360,7 @@ public final class TransferManager implements VuzeKeys {
                 download = new InvalidBittorrentDownload(R.string.torrent_scheme_download_not_supported);
             }
             if (!(download instanceof InvalidBittorrentDownload)) {
-                if ((download instanceof AzureusBittorrentDownload && !alreadyDownloadingByInfoHash(download.getHash())) ||
+                if ((download instanceof AzureusBittorrentDownload && !alreadyDownloadingByInfoHash(download.getInfoHash())) ||
                     (download instanceof TorrentFetcherDownload && !alreadyDownloading(uri.toString()))) {
                     if (!bittorrentDownloads.contains(download)) {
                         bittorrentDownloads.add(download);
@@ -476,7 +480,9 @@ public final class TransferManager implements VuzeKeys {
         for (Transfer t : transfers) {
             if (t instanceof BittorrentDownload) {
                 BittorrentDownload bt = (BittorrentDownload) t;
-                if (bt.isResumable()) {
+                // TODO:BITTORRENT
+                // review is paused here
+                if (bt.isPaused()) {
                     bt.resume();
                 }
             } 
