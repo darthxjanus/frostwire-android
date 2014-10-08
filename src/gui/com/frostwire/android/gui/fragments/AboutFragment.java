@@ -21,6 +21,7 @@ package com.frostwire.android.gui.fragments;
 import java.io.IOException;
 import java.io.InputStream;
 
+import com.frostwire.jlibtorrent.LibTorrent;
 import org.apache.commons.io.IOUtils;
 
 import android.app.Activity;
@@ -69,7 +70,8 @@ public class AboutFragment extends Fragment implements MainFragment {
         View view = inflater.inflate(R.layout.fragment_about, container, false);
 
         TextView title = (TextView) view.findViewById(R.id.fragment_about_title);
-        title.setText("FrostWire v" + Constants.FROSTWIRE_VERSION_STRING + " build " + Constants.FROSTWIRE_BUILD);
+        //title.setText("FrostWire v" + Constants.FROSTWIRE_VERSION_STRING + " build " + Constants.FROSTWIRE_BUILD);
+        title.setText("LibTorrent: " + LibTorrent.version());
 
         TextView content = (TextView) view.findViewById(R.id.fragment_about_content);
         content.setText(Html.fromHtml(getAboutText()));

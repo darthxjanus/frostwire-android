@@ -19,6 +19,7 @@ android {
             res.srcDirs = ['res']
             aidl.srcDirs = ['src']
             assets.srcDirs = ['assets']
+            jniLibs.srcDir 'libs'
             java {
                 srcDir 'common/components/apache'
                 srcDir 'common/components/core'
@@ -34,6 +35,8 @@ android {
                 srcDir 'src/core'
                 srcDir 'src/gui'
                 srcDir 'src/vuze_stub'
+
+                srcDir '../frostwire-jlibtorrent/src'
             }
         }
     }

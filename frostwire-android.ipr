@@ -32,6 +32,7 @@
   </component>
   <component name="FrameworkDetectionExcludesConfiguration">
     <file type="web" url="file://$PROJECT_DIR$" />
+    <file type="web" url="file://$PROJECT_DIR$/../frostwire-jlibtorrent/src" />
   </component>
   <component name="GradleSettings">
     <option name="linkedExternalProjectsSettings">
