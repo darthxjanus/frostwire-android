@@ -21,8 +21,8 @@ package com.frostwire.android.gui.adapters.menu;
 import android.content.Context;
 
 import com.frostwire.android.R;
-import com.frostwire.android.gui.transfers.Transfer;
 import com.frostwire.android.gui.views.MenuAction;
+import com.frostwire.transfers.Transfer;
 import com.frostwire.uxstats.UXAction;
 import com.frostwire.uxstats.UXStats;
 
@@ -43,7 +43,7 @@ public class CancelTransferMenuAction extends MenuAction {
 
     @Override
     protected void onClick(Context context) {
-        transfer.cancel();
+        transfer.remove();
         UXStats.instance().log(UXAction.DOWNLOAD_REMOVE);
     }
 }

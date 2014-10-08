@@ -23,9 +23,9 @@ import android.content.DialogInterface;
 
 import com.frostwire.android.R;
 import com.frostwire.android.gui.transfers.DownloadTransfer;
-import com.frostwire.android.gui.transfers.Transfer;
 import com.frostwire.android.gui.util.UIUtils;
 import com.frostwire.android.gui.views.MenuAction;
+import com.frostwire.transfers.Transfer;
 import com.frostwire.uxstats.UXAction;
 import com.frostwire.uxstats.UXStats;
 
@@ -50,9 +50,9 @@ public class CancelMenuAction extends MenuAction {
         UIUtils.showYesNoDialog(context, (deleteData) ? R.string.yes_no_cancel_delete_transfer_question : R.string.yes_no_cancel_transfer_question, R.string.cancel_transfer, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 if (transfer instanceof DownloadTransfer) {
-                    ((DownloadTransfer) transfer).cancel(deleteData);
+                    ((DownloadTransfer) transfer).remove(deleteData);
                 } else {
-                    transfer.cancel();
+                    transfer.remove();
                 }
                 UXStats.instance().log(UXAction.DOWNLOAD_REMOVE);
             }

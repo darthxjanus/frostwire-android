@@ -25,6 +25,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
+import com.frostwire.transfers.TransferItem;
+import com.frostwire.transfers.TransferState;
 import com.frostwire.util.ByteUtils;
 import com.frostwire.vuze.VuzeDownloadManager;
 import com.frostwire.vuze.VuzeFileInfo;
@@ -43,7 +45,7 @@ public final class AzureusBittorrentDownload implements BittorrentDownload {
     private final VuzeDownloadManager downloadManager;
     private final String hash;
 
-    private List<BittorrentDownloadItem> items;
+    private List<TransferItem> items;
 
     private boolean partialDownload;
     private Set<VuzeFileInfo> fileInfoSet;
@@ -57,12 +59,19 @@ public final class AzureusBittorrentDownload implements BittorrentDownload {
         refreshData(); // super mutable
     }
 
+    @Override
+    public String getName() {
+        return getDisplayName();
+    }
+
     public String getDisplayName() {
         return downloadManager.getDisplayName();
     }
 
-    public String getStatus() {
-        return downloadManager.getStatus();
+    public TransferState getState() {
+        // TODO:BITTORRENT
+        //return downloadManager.getStatus();
+        return TransferState.ERROR;
     }
 
     public int getProgress() {
@@ -107,7 +116,7 @@ public final class AzureusBittorrentDownload implements BittorrentDownload {
         return downloadManager.isSeeding();
     }
 
-    public List<? extends BittorrentDownloadItem> getItems() {
+    public List<TransferItem> getItems() {
         if (items.size() == 1) {
             return Collections.emptyList();
         }
@@ -157,7 +166,7 @@ public final class AzureusBittorrentDownload implements BittorrentDownload {
         return downloadManager.getETA();
     }
 
-    public Date getDateCreated() {
+    public Date getCreated() {
         return downloadManager.getCreationDate();
     }
 
@@ -182,12 +191,12 @@ public final class AzureusBittorrentDownload implements BittorrentDownload {
     }
 
     @Override
-    public void cancel() {
-        cancel(false);
+    public void remove() {
+        remove(false);
     }
 
     @Override
-    public void cancel(boolean deleteData) {
+    public void remove(boolean deleteData) {
         manager.remove(this);
         VuzeUtils.removeDownload(downloadManager, deleteData, deleteData);
     }
@@ -196,12 +205,6 @@ public final class AzureusBittorrentDownload implements BittorrentDownload {
         return downloadManager;
     }
 
-    @Override
-    public List<? extends BittorrentDownloadItem> getBittorrentItems() {
-        return items;
-    }
-
-    @Override
     public String getDetailsUrl() {
         return null;
     }
@@ -212,7 +215,7 @@ public final class AzureusBittorrentDownload implements BittorrentDownload {
             fileInfoSet = VuzeUtils.getFileInfoSet(downloadManager, InfoSetQuery.NO_SKIPPED);
             partialDownload = !VuzeUtils.getFileInfoSet(downloadManager, InfoSetQuery.SKIPPED).isEmpty();
 
-            items = new ArrayList<BittorrentDownloadItem>(fileInfoSet.size());
+            items = new ArrayList<TransferItem>(fileInfoSet.size());
             for (VuzeFileInfo fileInfo : fileInfoSet) {
                 items.add(new AzureusBittorrentDownloadItem(fileInfo));
             }

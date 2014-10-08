@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.frostwire.transfers.TransferItem;
+import com.frostwire.transfers.TransferState;
 import org.apache.commons.io.FilenameUtils;
 
 import android.os.SystemClock;
@@ -67,7 +68,7 @@ public final class HttpDownload implements DownloadTransfer {
     private final Date dateCreated;
     private final File savePath;
 
-    private int status;
+    private TransferState status;
     private long bytesReceived;
     private long averageSpeed; // in bytes
 
@@ -84,7 +85,7 @@ public final class HttpDownload implements DownloadTransfer {
 
         this.savePath = new File(savePath, link.getFileName());
 
-        this.status = STATUS_DOWNLOADING;
+        this.status = TransferState.DOWNLOADING;
     }
 
     HttpDownload(TransferManager manager, HttpDownloadLink link) {
@@ -99,12 +100,17 @@ public final class HttpDownload implements DownloadTransfer {
         this.listener = listener;
     }
 
+    @Override
+    public String getName() {
+        return link.getDisplayName();
+    }
+
     public String getDisplayName() {
         return link.getDisplayName();
     }
 
-    public String getStatus() {
-        return getStatusString(status);
+    public TransferState getState() {
+        return status;
     }
 
     public int getProgress() {
@@ -119,7 +125,7 @@ public final class HttpDownload implements DownloadTransfer {
         return link.getSize();
     }
 
-    public Date getDateCreated() {
+    public Date getCreated() {
         return dateCreated;
     }
 
@@ -150,17 +156,17 @@ public final class HttpDownload implements DownloadTransfer {
 
     public boolean isComplete() {
         if (bytesReceived > 0) {
-            return (bytesReceived == link.getSize() && status == STATUS_COMPLETE) || status == STATUS_ERROR;
+            return (bytesReceived == link.getSize() && TransferState.COMPLETE.equals(status) || TransferState.ERROR.equals(status));
         } else {
             return false;
         }
     }
 
     public boolean isDownloading() {
-        return status == STATUS_DOWNLOADING;
+        return TransferState.DOWNLOADING.equals(status);
     }
 
-    public List<? extends TransferItem> getItems() {
+    public List<TransferItem> getItems() {
         return Collections.emptyList();
     }
 
@@ -168,15 +174,15 @@ public final class HttpDownload implements DownloadTransfer {
         return savePath;
     }
 
-    public void cancel() {
-        cancel(false);
+    public void remove() {
+        remove(false);
     }
 
-    public void cancel(boolean deleteData) {
-        if (status != STATUS_COMPLETE) {
-            status = STATUS_CANCELLED;
+    public void remove(boolean deleteData) {
+        if (!TransferState.COMPLETE.equals(status)) {
+            status = TransferState.CANCELED;
         }
-        if (status != STATUS_COMPLETE || deleteData) {
+        if (!TransferState.COMPLETE.equals(status)|| deleteData) {
             cleanup();
         }
         manager.remove(this);
@@ -184,10 +190,6 @@ public final class HttpDownload implements DownloadTransfer {
 
     public void start() {
         start(0, 0);
-    }
-
-    int getStatusCode() {
-        return status;
     }
 
     /**
@@ -199,10 +201,10 @@ public final class HttpDownload implements DownloadTransfer {
         Engine.instance().getThreadPool().execute(new AbstractRunnable(getDisplayName()) {
             public void run() {
                 try {
-                    status = STATUS_WAITING;
+                    status = TransferState.WAITING;
                     SystemClock.sleep(delay * 1000);
 
-                    status = STATUS_DOWNLOADING;
+                    status = TransferState.DOWNLOADING;
                     String uri = link.getUrl();
                     new HttpFetcher(uri, 10000).save(savePath, new DownloadListener(retry));
                     Librarian.instance().scan(savePath);
@@ -259,7 +261,7 @@ public final class HttpDownload implements DownloadTransfer {
         boolean success = true;
         String location = null;
         if (link.isCompressed()) {
-            status = STATUS_UNCOMPRESSING;
+            status = TransferState.UNCOMPRESSING;
             location = FilenameUtils.removeExtension(savePath.getAbsolutePath());
             success = ZipUtils.unzip(savePath, new File(location));
         }
@@ -269,7 +271,7 @@ public final class HttpDownload implements DownloadTransfer {
                 listener.onComplete(this);
             }
 
-            status = STATUS_COMPLETE;
+            status = TransferState.COMPLETE;
 
             manager.incrementDownloadsToReview();
             Engine.instance().notifyDownloadFinished(getDisplayName(), getSavePath());
@@ -283,9 +285,9 @@ public final class HttpDownload implements DownloadTransfer {
     }
 
     private void error(Throwable e) {
-        if (status != STATUS_CANCELLED) {
+        if (!TransferState.CANCELED.equals(status)) {
             Log.e(TAG, String.format("Error downloading url: %s", link.getUrl()), e);
-            status = STATUS_ERROR;
+            status = TransferState.ERROR;
             cleanup();
         }
     }
@@ -310,7 +312,7 @@ public final class HttpDownload implements DownloadTransfer {
             bytesReceived += length;
             updateAverageDownloadSpeed();
 
-            if (status == STATUS_CANCELLED) {
+            if (TransferState.CANCELED.equals(status)) {
                 // ok, this is not the most elegant solution but it effectively breaks the
                 // download logic flow.
                 throw new RuntimeException("Invalid status, transfer cancelled");
@@ -370,7 +372,6 @@ public final class HttpDownload implements DownloadTransfer {
         }
     }
 
-    @Override
     public String getDetailsUrl() {
         return link.getUrl();
     }

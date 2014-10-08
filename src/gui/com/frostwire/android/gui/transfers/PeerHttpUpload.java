@@ -21,7 +21,9 @@ package com.frostwire.android.gui.transfers;
 import com.frostwire.android.R;
 import com.frostwire.android.core.FileDescriptor;
 import com.frostwire.transfers.TransferItem;
+import com.frostwire.transfers.TransferState;
 
+import java.io.File;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -42,7 +44,7 @@ public class PeerHttpUpload implements UploadTransfer {
     private final FileDescriptor fd;
     private final Date dateCreated;
 
-    private int status;
+    private TransferState status;
     public long bytesSent;
     public long averageSpeed; // in bytes
 
@@ -55,19 +57,29 @@ public class PeerHttpUpload implements UploadTransfer {
         this.fd = fd;
         this.dateCreated = new Date();
 
-        status = STATUS_UPLOADING;
+        status = TransferState.UPLOADING;
     }
 
     public FileDescriptor getFD() {
         return fd;
     }
 
+    @Override
+    public String getName() {
+        return fd.title;
+    }
+
     public String getDisplayName() {
         return fd.title;
     }
 
-    public String getStatus() {
-        return getStatusString(status);
+    @Override
+    public File getSavePath() {
+        return null;
+    }
+
+    public TransferState getState() {
+        return status;
     }
 
     public int getProgress() {
@@ -78,7 +90,7 @@ public class PeerHttpUpload implements UploadTransfer {
         return fd.fileSize;
     }
 
-    public Date getDateCreated() {
+    public Date getCreated() {
         return dateCreated;
     }
 
@@ -108,16 +120,16 @@ public class PeerHttpUpload implements UploadTransfer {
     }
 
     public boolean isUploading() {
-        return status == STATUS_UPLOADING;
+        return TransferState.UPLOADING.equals(status);
     }
 
-    public List<? extends TransferItem> getItems() {
+    public List<TransferItem> getItems() {
         return Collections.emptyList();
     }
 
-    public void cancel() {
-        if (status != STATUS_COMPLETE) {
-            status = STATUS_CANCELLED;
+    public void remove() {
+        if (!TransferState.COMPLETE.equals(status)) {
+            status = TransferState.CANCELED;
         }
         manager.remove(this);
     }
@@ -128,12 +140,12 @@ public class PeerHttpUpload implements UploadTransfer {
     }
 
     public void complete() {
-        status = STATUS_COMPLETE;
-        cancel();
+        status = TransferState.COMPLETE;
+        remove();
     }
 
     public boolean isCanceled() {
-        return status == STATUS_CANCELLED;
+        return TransferState.CANCELED.equals(status);
     }
 
     private String getStatusString(int status) {
@@ -165,7 +177,6 @@ public class PeerHttpUpload implements UploadTransfer {
         }
     }
 
-    @Override
     public String getDetailsUrl() {
         return null;
     }

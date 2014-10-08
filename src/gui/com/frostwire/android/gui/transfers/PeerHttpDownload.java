@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.frostwire.transfers.TransferItem;
+import com.frostwire.transfers.TransferState;
 import org.apache.commons.io.FilenameUtils;
 
 import android.os.SystemClock;
@@ -65,7 +66,7 @@ public final class PeerHttpDownload implements DownloadTransfer {
     private final Date dateCreated;
     private final File savePath;
 
-    private int status;
+    private TransferState status;
     private long bytesReceived;
     public long averageSpeed; // in bytes
 
@@ -79,7 +80,7 @@ public final class PeerHttpDownload implements DownloadTransfer {
         this.fd = fd;
         this.dateCreated = new Date();
         this.savePath = new File(SystemUtils.getSaveDirectory(fd.fileType), cleanFileName(FilenameUtils.getName(fd.filePath)));
-        status = STATUS_DOWNLOADING;
+        status = TransferState.DOWNLOADING;
     }
 
     public Peer getPeer() {
@@ -90,12 +91,17 @@ public final class PeerHttpDownload implements DownloadTransfer {
         return fd;
     }
 
+    @Override
+    public String getName() {
+        return fd.title;
+    }
+
     public String getDisplayName() {
         return fd.title;
     }
 
-    public String getStatus() {
-        return getStatusString(status);
+    public TransferState getState() {
+        return status;
     }
 
     public int getProgress() {
@@ -106,7 +112,7 @@ public final class PeerHttpDownload implements DownloadTransfer {
         return fd.fileSize;
     }
 
-    public Date getDateCreated() {
+    public Date getCreated() {
         return dateCreated;
     }
 
@@ -136,10 +142,10 @@ public final class PeerHttpDownload implements DownloadTransfer {
     }
 
     public boolean isDownloading() {
-        return status == STATUS_DOWNLOADING;
+        return TransferState.DOWNLOADING.equals(status);
     }
 
-    public List<? extends TransferItem> getItems() {
+    public List<TransferItem> getItems() {
         return Collections.emptyList();
     }
 
@@ -147,15 +153,15 @@ public final class PeerHttpDownload implements DownloadTransfer {
         return savePath;
     }
 
-    public void cancel() {
-        cancel(false);
+    public void remove() {
+        remove(false);
     }
 
-    public void cancel(boolean deleteData) {
-        if (status != STATUS_COMPLETE) {
-            status = STATUS_CANCELLED;
+    public void remove(boolean deleteData) {
+        if (!TransferState.COMPLETE.equals(status)) {
+            status = TransferState.CANCELED;
         }
-        if (status != STATUS_COMPLETE || deleteData) {
+        if (!TransferState.COMPLETE.equals(status) || deleteData) {
             cleanup();
         }
         manager.remove(this);
@@ -174,10 +180,10 @@ public final class PeerHttpDownload implements DownloadTransfer {
         Engine.instance().getThreadPool().execute(new AbstractRunnable(getDisplayName()) {
             public void run() {
                 try {
-                    status = STATUS_WAITING;
+                    status = TransferState.WAITING;
                     SystemClock.sleep(delay * 1000);
 
-                    status = STATUS_DOWNLOADING;
+                    status = TransferState.DOWNLOADING;
                     String uri = peer.getDownloadUri(fd);
                     new HttpFetcher(uri).save(savePath, new DownloadListener(retry));
                     Librarian.instance().scan(savePath);
@@ -224,16 +230,16 @@ public final class PeerHttpDownload implements DownloadTransfer {
     }
 
     private void complete() {
-        status = STATUS_COMPLETE;
+        status = TransferState.COMPLETE;
         manager.incrementDownloadsToReview();
         Engine.instance().notifyDownloadFinished(getDisplayName(), getSavePath());
         Librarian.instance().scan(savePath.getAbsoluteFile());
     }
 
     private void error(Throwable e) {
-        if (status != STATUS_CANCELLED) {
+        if (!TransferState.CANCELED.equals(status)) {
             Log.e(TAG, "Error downloading file: " + fd + " from " + peer, e);
-            status = STATUS_ERROR;
+            status = TransferState.ERROR;
             cleanup();
         }
     }
@@ -280,7 +286,7 @@ public final class PeerHttpDownload implements DownloadTransfer {
             bytesReceived += length;
             updateAverageDownloadSpeed();
 
-            if (status == STATUS_CANCELLED) {
+            if (status == TransferState.CANCELED) {
                 // ok, this is not the most elegant solution but it effectively breaks the
                 // download logic flow.
                 throw new RuntimeException("Invalid status, transfer cancelled");
@@ -309,7 +315,6 @@ public final class PeerHttpDownload implements DownloadTransfer {
         }
     }
 
-    @Override
     public String getDetailsUrl() {
         return getPeer().getDownloadUri(getFD());
     }

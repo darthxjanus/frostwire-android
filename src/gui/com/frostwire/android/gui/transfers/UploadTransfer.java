@@ -18,6 +18,8 @@
 
 package com.frostwire.android.gui.transfers;
 
+import com.frostwire.transfers.Transfer;
+
 /**
  * @author gubatron
  * @author aldenml

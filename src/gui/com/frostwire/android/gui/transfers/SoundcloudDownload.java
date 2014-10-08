@@ -34,6 +34,7 @@ import com.frostwire.mp3.ID3v23Tag;
 import com.frostwire.mp3.Mp3File;
 import com.frostwire.search.soundcloud.SoundcloudSearchResult;
 import com.frostwire.transfers.TransferItem;
+import com.frostwire.transfers.TransferState;
 
 /**
  * @author gubatron
@@ -54,13 +55,18 @@ public class SoundcloudDownload extends TemporaryDownloadTransfer<SoundcloudSear
     }
 
     @Override
+    public String getName() {
+        return sr.getDownloadUrl();
+    }
+
+    @Override
     public String getDisplayName() {
         return sr.getDisplayName();
     }
 
     @Override
-    public String getStatus() {
-        return delegate != null ? delegate.getStatus() : "";
+    public TransferState getState() {
+        return delegate != null ? delegate.getState() : TransferState.DOWNLOADING;
     }
 
     @Override
@@ -74,8 +80,8 @@ public class SoundcloudDownload extends TemporaryDownloadTransfer<SoundcloudSear
     }
 
     @Override
-    public Date getDateCreated() {
-        return delegate != null ? delegate.getDateCreated() : new Date();
+    public Date getCreated() {
+        return delegate != null ? delegate.getCreated() : new Date();
     }
 
     @Override
@@ -113,21 +119,22 @@ public class SoundcloudDownload extends TemporaryDownloadTransfer<SoundcloudSear
             //Suggestion: maybe look at the Content-length HTTP header for a size
             //if sound cloud sends this when the download starts and update the
             //link.getSize() value with this number as it becomes known.
-            return delegate.getStatusCode() == HttpDownload.STATUS_COMPLETE || delegate.getStatusCode() == HttpDownload.STATUS_ERROR;
+            // TODO:BITTORRENT
+            return false;//delegate.getStatusCode() == HttpDownload.STATUS_COMPLETE || delegate.getStatusCode() == HttpDownload.STATUS_ERROR;
         } else {
             return false;
         }
     }
 
     @Override
-    public List<? extends TransferItem> getItems() {
+    public List<TransferItem> getItems() {
         return Collections.emptyList();
     }
 
     @Override
-    public void cancel() {
+    public void remove() {
         if (delegate != null) {
-            delegate.cancel();
+            delegate.remove();
         }
         manager.remove(this);
     }
@@ -138,9 +145,9 @@ public class SoundcloudDownload extends TemporaryDownloadTransfer<SoundcloudSear
     }
 
     @Override
-    public void cancel(boolean deleteData) {
+    public void remove(boolean deleteData) {
         if (delegate != null) {
-            delegate.cancel(deleteData);
+            delegate.remove(deleteData);
         }
         manager.remove(this);
     }

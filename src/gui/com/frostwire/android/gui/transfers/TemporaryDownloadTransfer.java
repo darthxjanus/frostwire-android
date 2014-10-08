@@ -46,7 +46,6 @@ public abstract class TemporaryDownloadTransfer<T extends SearchResult> implemen
         return path;
     }
     
-    @Override
     public String getDetailsUrl() {
         return sr.getDetailsUrl();
     }

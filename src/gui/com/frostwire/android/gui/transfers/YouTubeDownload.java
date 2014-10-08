@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.frostwire.transfers.TransferItem;
+import com.frostwire.transfers.TransferState;
 import org.apache.commons.io.FilenameUtils;
 
 import android.util.Log;
@@ -73,7 +74,7 @@ public final class YouTubeDownload implements DownloadTransfer {
     private final Date dateCreated;
 
     private final long size;
-    private int status;
+    private TransferState status;
     private long bytesReceived;
     private long averageSpeed; // in bytes
 
@@ -135,12 +136,17 @@ public final class YouTubeDownload implements DownloadTransfer {
         return dt;
     }
 
+    @Override
+    public String getName() {
+        return sr.getDownloadUrl();
+    }
+
     public String getDisplayName() {
         return sr.getDisplayName();
     }
 
-    public String getStatus() {
-        return getStatusString(status);
+    public TransferState getState() {
+        return status;
     }
 
     public int getProgress() {
@@ -155,7 +161,7 @@ public final class YouTubeDownload implements DownloadTransfer {
         return size;
     }
 
-    public Date getDateCreated() {
+    public Date getCreated() {
         return dateCreated;
     }
 
@@ -186,17 +192,17 @@ public final class YouTubeDownload implements DownloadTransfer {
 
     public boolean isComplete() {
         if (bytesReceived > 0) {
-            return bytesReceived == size || status == STATUS_COMPLETE || status == STATUS_ERROR;
+            return bytesReceived == size || TransferState.COMPLETE.equals( status)|| TransferState.ERROR.equals(status);
         } else {
             return false;
         }
     }
 
     public boolean isDownloading() {
-        return status == STATUS_DOWNLOADING;
+        return TransferState.DOWNLOADING.equals(status);
     }
 
-    public List<? extends TransferItem> getItems() {
+    public List<TransferItem> getItems() {
         return Collections.emptyList();
     }
 
@@ -204,15 +210,15 @@ public final class YouTubeDownload implements DownloadTransfer {
         return completeFile;
     }
 
-    public void cancel() {
-        cancel(false);
+    public void remove() {
+        remove(false);
     }
 
-    public void cancel(boolean deleteData) {
-        if (status != STATUS_COMPLETE) {
-            status = STATUS_CANCELLED;
+    public void remove(boolean deleteData) {
+        if (!TransferState.COMPLETE.equals(status)) {
+            status = TransferState.CANCELED;
         }
-        if (status != STATUS_COMPLETE || deleteData) {
+        if (!TransferState.COMPLETE.equals(status) || deleteData) {
             cleanup();
         }
         manager.remove(this);
@@ -226,18 +232,14 @@ public final class YouTubeDownload implements DownloadTransfer {
         }
     }
 
-    int getStatusCode() {
-        return status;
-    }
-
     private void start(final LinkInfo inf, final File temp) {
-        status = STATUS_WAITING;
+        status = TransferState.WAITING;
 
         Engine.instance().getThreadPool().execute(new Runnable() {
             @Override
             public void run() {
                 try {
-                    status = STATUS_DOWNLOADING;
+                    status = TransferState.DOWNLOADING;
                     httpClient.save(inf.link, temp, false);
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -291,7 +293,7 @@ public final class YouTubeDownload implements DownloadTransfer {
 
     private void complete() {
 
-        status = STATUS_COMPLETE;
+        status = TransferState.COMPLETE;
 
         manager.incrementDownloadsToReview();
         Engine.instance().notifyDownloadFinished(getDisplayName(), getSavePath());
@@ -304,13 +306,13 @@ public final class YouTubeDownload implements DownloadTransfer {
     }
 
     private void error(Throwable e) {
-        if (status != STATUS_CANCELLED) {
+        if (!TransferState.CANCELED.equals(status)) {
             if (e != null) {
                 Log.e(TAG, String.format("Error downloading url: %s", sr.getDownloadUrl()), e);
             } else {
                 Log.e(TAG, String.format("Error downloading url: %s", sr.getDownloadUrl()));
             }
-            status = STATUS_ERROR;
+            status = TransferState.ERROR;
             cleanup();
         }
     }
@@ -324,7 +326,6 @@ public final class YouTubeDownload implements DownloadTransfer {
         }
     }
 
-    @Override
     public String getDetailsUrl() {
         return sr.getDetailsUrl();
     }
@@ -341,10 +342,10 @@ public final class YouTubeDownload implements DownloadTransfer {
 
         @Override
         public void onData(HttpClient client, byte[] buffer, int offset, int length) {
-            if (status != STATUS_COMPLETE && status != STATUS_CANCELLED && status != STATUS_DEMUXING) {
+            if (!TransferState.COMPLETE.equals(status) && !TransferState.CANCELED.equals(status)&& !TransferState.DEMUXING.equals(status)) {
                 bytesReceived += length;
                 updateAverageDownloadSpeed();
-                status = STATUS_DOWNLOADING;
+                status = TransferState.DOWNLOADING;
             }
         }
 
@@ -360,7 +361,7 @@ public final class YouTubeDownload implements DownloadTransfer {
                 }
             } else if (downloadType == DownloadType.DEMUX) {
                 try {
-                    status = STATUS_DEMUXING;
+                    status = TransferState.DEMUXING;
                     new MP4Muxer().demuxAudio(tempAudio.getAbsolutePath(), completeFile.getAbsolutePath(), buildMetadata());
 
                     if (!completeFile.exists()) {
@@ -377,7 +378,7 @@ public final class YouTubeDownload implements DownloadTransfer {
                     start(sr.getAudio(), tempAudio);
                 } else if (tempVideo.exists() && tempAudio.exists()) {
                     try {
-                        status = STATUS_DEMUXING;
+                        status = TransferState.DEMUXING;
                         new MP4Muxer().mux(tempVideo.getAbsolutePath(), tempAudio.getAbsolutePath(), completeFile.getAbsolutePath(), buildMetadata());
 
                         if (!completeFile.exists()) {
@@ -401,7 +402,7 @@ public final class YouTubeDownload implements DownloadTransfer {
         @Override
         public void onCancel(HttpClient client) {
             cleanup();
-            status = STATUS_CANCELLED;
+            status = TransferState.CANCELED;
         }
 
         @Override
