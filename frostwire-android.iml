@@ -97,6 +97,7 @@
       <sourceFolder url="file://$MODULE_DIR$/../frostwire-common/jmdns" isTestSource="false" />
     </content>
     <content url="file://$MODULE_DIR$/../frostwire-common/mp4parser">
+      <sourceFolder url="file://$MODULE_DIR$/../frostwire-common/mp4parser" type="java-resource" />
       <sourceFolder url="file://$MODULE_DIR$/../frostwire-common/mp4parser" isTestSource="false" />
     </content>
     <content url="file://$MODULE_DIR$/../frostwire-common/okhttp">

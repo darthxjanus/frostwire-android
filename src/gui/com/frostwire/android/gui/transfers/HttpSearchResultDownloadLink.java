@@ -20,17 +20,18 @@ package com.frostwire.android.gui.transfers;
 
 import com.frostwire.search.HttpSearchResult;
 
+import static com.frostwire.util.OSUtils.escapeFilename;
+
 /**
  * @author gubatron
  * @author aldenml
- *
  */
 public final class HttpSearchResultDownloadLink extends HttpDownloadLink {
 
     private final HttpSearchResult sr;
 
     public HttpSearchResultDownloadLink(HttpSearchResult sr) {
-        super(sr.getDownloadUrl(), getValidFileName(sr.getFilename()), sr.getDisplayName(), sr.getSize(), false);
+        super(sr.getDownloadUrl(), escapeFilename(sr.getFilename()), sr.getDisplayName(), sr.getSize(), false);
         this.sr = sr;
     }
 

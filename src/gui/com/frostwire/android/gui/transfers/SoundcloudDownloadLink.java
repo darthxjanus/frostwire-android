@@ -20,17 +20,18 @@ package com.frostwire.android.gui.transfers;
 
 import com.frostwire.search.soundcloud.SoundcloudSearchResult;
 
+import static com.frostwire.util.OSUtils.escapeFilename;
+
 /**
  * @author gubatron
  * @author aldenml
- *
  */
 public final class SoundcloudDownloadLink extends HttpDownloadLink {
 
     private final SoundcloudSearchResult sr;
 
     public SoundcloudDownloadLink(SoundcloudSearchResult sr) {
-        super(sr.getStreamUrl(), getValidFileName(sr.getFilename()), sr.getDisplayName(), sr.getSize(), false);
+        super(sr.getStreamUrl(), escapeFilename(sr.getFilename()), sr.getDisplayName(), sr.getSize(), false);
         this.sr = sr;
     }
 

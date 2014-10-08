@@ -38,6 +38,11 @@ android {
                 srcDir 'src/gui'
                 srcDir 'src/vuze_stub'
             }
+            resources {
+                srcDir '../frostwire-common/mp4parser'
+                include '**/*.properties'
+                exclude '**/*.java'
+            }
         }
     }
 }
