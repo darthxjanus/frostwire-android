@@ -22,6 +22,7 @@ import com.frostwire.android.R;
 import com.frostwire.android.core.FileDescriptor;
 import com.frostwire.transfers.TransferItem;
 import com.frostwire.transfers.TransferState;
+import com.frostwire.transfers.UploadTransfer;
 
 import java.io.File;
 import java.util.Collections;
