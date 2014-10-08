@@ -11,3 +11,5 @@ tests/bin/
 tests/gen/
 .idea/
 *.iws
+/build
+/.gradle

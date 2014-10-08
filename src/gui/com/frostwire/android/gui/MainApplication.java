@@ -145,8 +145,6 @@ public class MainApplication extends Application {
         ctx.iface = iface;
 
         BTEngine.ctx = ctx;
-
-        BTEngine.getInstance().loadSettings();
     }
 
     private String getDeviceId() {

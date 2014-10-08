@@ -18,18 +18,8 @@
 
 package com.frostwire.android.gui.transfers;
 
-import java.io.File;
-import java.io.IOException;
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.concurrent.CopyOnWriteArrayList;
-
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
-
 import com.frostwire.android.R;
 import com.frostwire.android.core.ConfigurationManager;
 import com.frostwire.android.core.Constants;
@@ -53,22 +43,21 @@ import com.frostwire.transfers.BittorrentDownload;
 import com.frostwire.transfers.DownloadTransfer;
 import com.frostwire.transfers.Transfer;
 import com.frostwire.transfers.UploadTransfer;
-import com.frostwire.util.ByteUtils;
-import com.frostwire.util.StringUtils;
 import com.frostwire.uxstats.UXAction;
 import com.frostwire.uxstats.UXStats;
-import com.frostwire.vuze.VuzeDownloadFactory;
-import com.frostwire.vuze.VuzeDownloadListener;
-import com.frostwire.vuze.VuzeDownloadManager;
-import com.frostwire.vuze.VuzeKeys;
-import com.frostwire.vuze.VuzeManager;
-import com.frostwire.vuze.VuzeUtils;
+import com.frostwire.vuze.*;
 import com.frostwire.vuze.VuzeManager.LoadTorrentsListener;
+
+import java.io.IOException;
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * @author gubatron
  * @author aldenml
- *
  */
 public final class TransferManager implements VuzeKeys {
 
@@ -148,10 +137,10 @@ public final class TransferManager implements VuzeKeys {
         return false;
     }
 
-    
+
     public DownloadTransfer download(SearchResult sr) {
         DownloadTransfer transfer = new InvalidDownload();
-        
+
         if (alreadyDownloading(sr.getDetailsUrl())) {
             transfer = new ExistingDownload();
         }
@@ -167,23 +156,27 @@ public final class TransferManager implements VuzeKeys {
         } else if (sr instanceof HttpSearchResult) {
             transfer = newHttpDownload((HttpSearchResult) sr);
         }
-        
+
         if (isBittorrentDownloadAndMobileDataSavingsOn(transfer)) {
             //give it time to get to a pausable state.
-            try { Thread.sleep(5000);  } catch (Throwable t) { /*meh*/ }
+            try {
+                Thread.sleep(5000);
+            } catch (Throwable t) { /*meh*/ }
             enqueueTorrentTransfer(transfer);
             //give it time to stop before onPostExecute
-            try { Thread.sleep(5000);  } catch (Throwable t) { /*meh*/ }
+            try {
+                Thread.sleep(5000);
+            } catch (Throwable t) { /*meh*/ }
         }
-        
+
         return transfer;
     }
-    
+
     private void enqueueTorrentTransfer(DownloadTransfer transfer) {
         if (transfer instanceof AzureusBittorrentDownload) {
             AzureusBittorrentDownload btDownload = (AzureusBittorrentDownload) transfer;
             btDownload.enqueue();
-        } else if (transfer instanceof TorrentFetcherDownload){
+        } else if (transfer instanceof TorrentFetcherDownload) {
             TorrentFetcherDownload btDownload = (TorrentFetcherDownload) transfer;
             // TODO:BITTORRENT
             //btDownload.enqueue();
@@ -340,17 +333,6 @@ public final class TransferManager implements VuzeKeys {
                     return;
                 }
 
-                File savePath = dl.getSavePath();
-
-//                if (savePath != null && savePath.getParentFile().getAbsolutePath().equals(UpdateSettings.UPDATES_DIR.getAbsolutePath())) {
-//                    LOG.info("Update download: " + savePath);
-//                    return;
-//                }
-
-//                if (CommonUtils.isPortable()) {
-//                    updateDownloadManagerPortableSaveLocation(downloadManager);
-//                }
-
                 bittorrentDownloads.add(dl);
             }
         });
@@ -391,16 +373,20 @@ public final class TransferManager implements VuzeKeys {
             }
             if (!(download instanceof InvalidBittorrentDownload)) {
                 if ((download instanceof AzureusBittorrentDownload && !alreadyDownloadingByInfoHash(download.getInfoHash())) ||
-                    (download instanceof TorrentFetcherDownload && !alreadyDownloading(uri.toString()))) {
+                        (download instanceof TorrentFetcherDownload && !alreadyDownloading(uri.toString()))) {
                     if (!bittorrentDownloads.contains(download)) {
                         bittorrentDownloads.add(download);
-                        
+
                         if (isBittorrentDownloadAndMobileDataSavingsOn(download)) {
                             //give it time to get to a pausable state.
-                            try { Thread.sleep(5000);  } catch (Throwable t) { /*meh*/ }
+                            try {
+                                Thread.sleep(5000);
+                            } catch (Throwable t) { /*meh*/ }
                             enqueueTorrentTransfer(download);
                             //give it time to stop before onPostExecute
-                            try { Thread.sleep(5000);  } catch (Throwable t) { /*meh*/ }
+                            try {
+                                Thread.sleep(5000);
+                            } catch (Throwable t) { /*meh*/ }
                         }
                     }
                 }
@@ -415,7 +401,7 @@ public final class TransferManager implements VuzeKeys {
 
     private static BittorrentDownload createBittorrentDownload(TransferManager manager, TorrentSearchResult sr) {
         if (sr instanceof TorrentCrawledSearchResult) {
-            BTEngine.getInstance().download((TorrentCrawledSearchResult)sr, null);
+            BTEngine.getInstance().download((TorrentCrawledSearchResult) sr, null);
         }
         return null;
         // TODO:BITTORRENT
@@ -490,27 +476,27 @@ public final class TransferManager implements VuzeKeys {
 
         return download;
     }
-    
+
     private boolean isBittorrentDownload(DownloadTransfer transfer) {
         return transfer instanceof AzureusBittorrentDownload || transfer instanceof TorrentFetcherDownload;
     }
 
     public boolean isBittorrentDownloadAndMobileDataSavingsOn(DownloadTransfer transfer) {
-        return isBittorrentDownload(transfer) && 
-                NetworkManager.instance().isDataMobileUp() && 
+        return isBittorrentDownload(transfer) &&
+                NetworkManager.instance().isDataMobileUp() &&
                 !ConfigurationManager.instance().getBoolean(Constants.PREF_KEY_NETWORK_USE_MOBILE_DATA);
     }
-    
+
     public boolean isBittorrentDownloadAndMobileDataSavingsOff(DownloadTransfer transfer) {
-        return isBittorrentDownload(transfer) && 
-               NetworkManager.instance().isDataMobileUp() && 
-               ConfigurationManager.instance().getBoolean(Constants.PREF_KEY_NETWORK_USE_MOBILE_DATA);
+        return isBittorrentDownload(transfer) &&
+                NetworkManager.instance().isDataMobileUp() &&
+                ConfigurationManager.instance().getBoolean(Constants.PREF_KEY_NETWORK_USE_MOBILE_DATA);
     }
-    
-    public boolean isBittorrentDisconnected(){
-       return Engine.instance().isStopped() || Engine.instance().isStopping() || Engine.instance().isDisconnected();
+
+    public boolean isBittorrentDisconnected() {
+        return Engine.instance().isStopped() || Engine.instance().isStopping() || Engine.instance().isDisconnected();
     }
-    
+
     public void resumeResumableTransfers() {
         List<Transfer> transfers = getTransfers();
 
@@ -522,11 +508,13 @@ public final class TransferManager implements VuzeKeys {
                 if (bt.isPaused()) {
                     bt.resume();
                 }
-            } 
-        }        
+            }
+        }
     }
 
-    /** Stops all HttpDownloads (Cloud and Wi-Fi) */
+    /**
+     * Stops all HttpDownloads (Cloud and Wi-Fi)
+     */
     public void stopHttpTransfers() {
         List<Transfer> transfers = new ArrayList<Transfer>();
         transfers.addAll(downloads);
