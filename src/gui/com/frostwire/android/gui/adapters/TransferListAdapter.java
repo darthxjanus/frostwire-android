@@ -53,7 +53,6 @@ import com.frostwire.android.gui.adapters.menu.OpenMenuAction;
 import com.frostwire.android.gui.adapters.menu.PauseDownloadMenuAction;
 import com.frostwire.android.gui.adapters.menu.ResumeDownloadMenuAction;
 import com.frostwire.android.gui.transfers.BittorrentDownload;
-import com.frostwire.android.gui.transfers.BittorrentDownloadItem;
 import com.frostwire.android.gui.transfers.HttpDownload;
 import com.frostwire.android.gui.transfers.PeerHttpDownload;
 import com.frostwire.android.gui.transfers.PeerHttpUpload;
@@ -247,8 +246,8 @@ public class TransferListAdapter extends BaseExpandableListAdapter {
     }
 
     protected void populateChildView(View view, TransferItem item) {
-        if (item instanceof BittorrentDownloadItem) {
-            populateBittorrentDownloadItem(view, (BittorrentDownloadItem) item);
+        if (item instanceof TransferItem) {
+            populateBittorrentDownloadItem(view, (TransferItem) item);
         }
     }
 
@@ -263,8 +262,8 @@ public class TransferListAdapter extends BaseExpandableListAdapter {
 
             //If it's a torrent download with a single file, we should be able to open it.
             if (download.isComplete() && download.getItems().size() == 1) {
-                BittorrentDownloadItem transferItem = (BittorrentDownloadItem) download.getItems().get(0);
-                String path = transferItem.getSavePath().getAbsolutePath();
+                TransferItem transferItem = (TransferItem) download.getItems().get(0);
+                String path = transferItem.getFile().getAbsolutePath();
                 String mimeType = UIUtils.getMimeType(path);
                 items.add(new OpenMenuAction(context, path, mimeType));
             }
@@ -345,8 +344,8 @@ public class TransferListAdapter extends BaseExpandableListAdapter {
                 if (item instanceof BittorrentDownload) {
                     BittorrentDownload bItem = (BittorrentDownload) item;
                     if (bItem.getItems().size() > 0) {
-                        BittorrentDownloadItem transferItem = (BittorrentDownloadItem)bItem.getItems().get(0);
-                        path = transferItem.getSavePath().getAbsolutePath();
+                        TransferItem transferItem = (TransferItem)bItem.getItems().get(0);
+                        path = transferItem.getFile().getAbsolutePath();
                         extension = FilenameUtils.getExtension(path);
                     }
                 } else if (item instanceof DownloadTransfer) {
@@ -498,14 +497,14 @@ public class TransferListAdapter extends BaseExpandableListAdapter {
         buttonAction.setOnClickListener(actionOnClickListener);
     }
 
-    private void populateBittorrentDownloadItem(View view, BittorrentDownloadItem item) {
+    private void populateBittorrentDownloadItem(View view, TransferItem item) {
         ImageView icon = findView(view, R.id.view_transfer_item_list_item_icon);
         TextView title = findView(view, R.id.view_transfer_item_list_item_title);
         ProgressBar progress = findView(view, R.id.view_transfer_item_list_item_progress);
         TextView size = findView(view, R.id.view_transfer_item_list_item_size);
         ImageButton buttonPlay = findView(view, R.id.view_transfer_item_list_item_button_play);
 
-        icon.setImageResource(getFileTypeIconId(FilenameUtils.getExtension(item.getSavePath().getAbsolutePath())));
+        icon.setImageResource(getFileTypeIconId(FilenameUtils.getExtension(item.getFile().getAbsolutePath())));
         title.setText(item.getDisplayName());
         progress.setProgress(item.getProgress());
         size.setText(UIUtils.getBytesInHuman(item.getSize()));
@@ -642,12 +641,12 @@ public class TransferListAdapter extends BaseExpandableListAdapter {
             TransferItem item = (TransferItem) v.getTag();
 
             boolean canOpen = false;
-            canOpen |= item.getProgress() == 100 && item instanceof BittorrentDownloadItem;
+            canOpen |= item.getProgress() == 100 && item instanceof TransferItem;
 
             if (canOpen) {
                 File savePath = null;
-                if (item instanceof BittorrentDownloadItem) {
-                    savePath = ((BittorrentDownloadItem) item).getSavePath();
+                if (item instanceof TransferItem) {
+                    savePath = ((TransferItem) item).getFile();
                 }
 
                 if (savePath != null) {

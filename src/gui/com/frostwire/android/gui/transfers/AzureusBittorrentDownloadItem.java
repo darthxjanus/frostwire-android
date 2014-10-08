@@ -20,6 +20,7 @@ package com.frostwire.android.gui.transfers;
 
 import java.io.File;
 
+import com.frostwire.transfers.TransferItem;
 import org.apache.commons.io.FilenameUtils;
 
 import com.frostwire.vuze.VuzeFileInfo;
@@ -29,7 +30,7 @@ import com.frostwire.vuze.VuzeFileInfo;
  * @author aldenml
  *
  */
-final class AzureusBittorrentDownloadItem implements BittorrentDownloadItem {
+final class AzureusBittorrentDownloadItem implements TransferItem {
 
     private final VuzeFileInfo info;
     private final String displayName;
@@ -45,7 +46,7 @@ final class AzureusBittorrentDownloadItem implements BittorrentDownloadItem {
     }
 
     @Override
-    public File getSavePath() {
+    public File getFile() {
         return info.getFile();
     }
 
@@ -71,11 +72,6 @@ final class AzureusBittorrentDownloadItem implements BittorrentDownloadItem {
     @Override
     public boolean isSkipped() {
         return false;
-    }
-
-    @Override
-    public File getFile() {
-        return null;
     }
 
     @Override
