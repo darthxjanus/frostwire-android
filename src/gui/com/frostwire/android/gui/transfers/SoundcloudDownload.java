@@ -33,6 +33,7 @@ import com.frostwire.mp3.ID3v1Tag;
 import com.frostwire.mp3.ID3v23Tag;
 import com.frostwire.mp3.Mp3File;
 import com.frostwire.search.soundcloud.SoundcloudSearchResult;
+import com.frostwire.transfers.TransferItem;
 
 /**
  * @author gubatron

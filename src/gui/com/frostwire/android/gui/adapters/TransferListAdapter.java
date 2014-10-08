@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import com.frostwire.transfers.TransferItem;
 import org.apache.commons.io.FilenameUtils;
 
 import android.app.Dialog;
@@ -58,7 +59,6 @@ import com.frostwire.android.gui.transfers.PeerHttpUpload;
 import com.frostwire.android.gui.transfers.SoundcloudDownload;
 import com.frostwire.android.gui.transfers.TorrentFetcherDownload;
 import com.frostwire.android.gui.transfers.Transfer;
-import com.frostwire.android.gui.transfers.TransferItem;
 import com.frostwire.android.gui.transfers.YouTubeDownload;
 import com.frostwire.android.gui.util.UIUtils;
 import com.frostwire.android.gui.views.MenuAction;

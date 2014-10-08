@@ -18,6 +18,8 @@
 
 package com.frostwire.android.gui.transfers;
 
+import com.frostwire.transfers.TransferItem;
+
 import java.io.File;
 import java.util.Collections;
 import java.util.Date;

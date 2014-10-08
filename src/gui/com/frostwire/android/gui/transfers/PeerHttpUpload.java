@@ -18,17 +18,17 @@
 
 package com.frostwire.android.gui.transfers;
 
+import com.frostwire.android.R;
+import com.frostwire.android.core.FileDescriptor;
+import com.frostwire.transfers.TransferItem;
+
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
-import com.frostwire.android.R;
-import com.frostwire.android.core.FileDescriptor;
-
 /**
  * @author gubatron
  * @author aldenml
- *
  */
 public class PeerHttpUpload implements UploadTransfer {
 
@@ -139,18 +139,18 @@ public class PeerHttpUpload implements UploadTransfer {
     private String getStatusString(int status) {
         int resId;
         switch (status) {
-        case STATUS_UPLOADING:
-            resId = (getUploadSpeed() < 102400) ? R.string.peer_http_upload_status_streaming : R.string.peer_http_upload_status_uploading;
-            break;
-        case STATUS_COMPLETE:
-            resId = R.string.peer_http_upload_status_complete;
-            break;
-        case STATUS_CANCELLED:
-            resId = R.string.peer_http_upload_status_cancelled;
-            break;
-        default:
-            resId = R.string.peer_http_upload_status_unknown;
-            break;
+            case STATUS_UPLOADING:
+                resId = (getUploadSpeed() < 102400) ? R.string.peer_http_upload_status_streaming : R.string.peer_http_upload_status_uploading;
+                break;
+            case STATUS_COMPLETE:
+                resId = R.string.peer_http_upload_status_complete;
+                break;
+            case STATUS_CANCELLED:
+                resId = R.string.peer_http_upload_status_cancelled;
+                break;
+            default:
+                resId = R.string.peer_http_upload_status_unknown;
+                break;
         }
         return String.valueOf(resId);
     }
@@ -164,7 +164,7 @@ public class PeerHttpUpload implements UploadTransfer {
             totalSentSinceLastSpeedStamp = bytesSent;
         }
     }
-    
+
     @Override
     public String getDetailsUrl() {
         return null;

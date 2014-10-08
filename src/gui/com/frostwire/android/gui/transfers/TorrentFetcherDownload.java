@@ -28,6 +28,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import com.frostwire.android.R;
 import com.frostwire.logging.Logger;
+import com.frostwire.transfers.TransferItem;
 import com.frostwire.vuze.VuzeDownloadManager;
 import com.frostwire.vuze.VuzeTorrentDownloadListener;
 import com.frostwire.vuze.VuzeTorrentDownloader;

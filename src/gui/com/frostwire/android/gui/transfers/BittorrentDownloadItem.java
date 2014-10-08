@@ -18,12 +18,13 @@
 
 package com.frostwire.android.gui.transfers;
 
+import com.frostwire.transfers.TransferItem;
+
 import java.io.File;
 
 /**
  * @author gubatron
  * @author aldenml
- *
  */
 public interface BittorrentDownloadItem extends TransferItem {
 
