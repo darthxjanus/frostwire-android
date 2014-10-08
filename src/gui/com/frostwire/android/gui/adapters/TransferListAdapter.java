@@ -511,7 +511,7 @@ public class TransferListAdapter extends BaseExpandableListAdapter {
         size.setText(UIUtils.getBytesInHuman(item.getSize()));
 
         buttonPlay.setTag(item);
-        buttonPlay.setVisibility(item.isComplete() ? View.VISIBLE : View.GONE);
+        buttonPlay.setVisibility(item.getProgress() == 100 ? View.VISIBLE : View.GONE);
         buttonPlay.setOnClickListener(playOnClickListener);
     }
 
@@ -642,7 +642,7 @@ public class TransferListAdapter extends BaseExpandableListAdapter {
             TransferItem item = (TransferItem) v.getTag();
 
             boolean canOpen = false;
-            canOpen |= item.isComplete() && item instanceof BittorrentDownloadItem;
+            canOpen |= item.getProgress() == 100 && item instanceof BittorrentDownloadItem;
 
             if (canOpen) {
                 File savePath = null;

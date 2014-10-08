@@ -59,7 +59,6 @@ final class AzureusBittorrentDownloadItem implements BittorrentDownloadItem {
         return info.getLength();
     }
 
-    @Override
     public boolean isComplete() {
         return info.getDownloaded() == info.getLength();
     }
