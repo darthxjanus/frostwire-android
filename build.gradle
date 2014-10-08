@@ -21,22 +21,21 @@ android {
             assets.srcDirs = ['assets']
             jniLibs.srcDir 'libs'
             java {
-                srcDir 'common/components/apache'
+                srcDir '../frostwire-common/apache'
                 srcDir 'common/components/core'
-                srcDir 'common/components/gson'
-                srcDir 'common/components/httpserver'
-                srcDir 'common/components/jdownloader'
-                srcDir 'common/components/jmdns'
-                srcDir 'common/components/minicastle'
-                srcDir 'common/components/mp4parser'
-                srcDir 'common/components/okhttp'
+                srcDir '../frostwire-common/gson'
+                srcDir '../frostwire-common/httpserver'
+                srcDir '../frostwire-common/jdownloader'
+                srcDir '../frostwire-common/jmdns'
+                srcDir '../frostwire-common/mp4parser'
+                srcDir '../frostwire-common/okhttp'
+
+                srcDir '../frostwire-jlibtorrent/src'
 
                 srcDir 'src/apollo_player'
                 srcDir 'src/core'
                 srcDir 'src/gui'
                 srcDir 'src/vuze_stub'
-
-                srcDir '../frostwire-jlibtorrent/src'
             }
         }
     }
