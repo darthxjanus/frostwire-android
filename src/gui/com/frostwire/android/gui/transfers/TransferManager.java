@@ -157,7 +157,8 @@ public final class TransferManager implements VuzeKeys {
             transfer = newHttpDownload((HttpSearchResult) sr);
         }
 
-        if (isBittorrentDownloadAndMobileDataSavingsOn(transfer)) {
+        // TODO:BITTORRENT
+        if (transfer != null && isBittorrentDownloadAndMobileDataSavingsOn(transfer)) {
             //give it time to get to a pausable state.
             try {
                 Thread.sleep(5000);
@@ -430,9 +431,9 @@ public final class TransferManager implements VuzeKeys {
         try {
             BittorrentDownload dl = createBittorrentDownload(this, sr);
 
-            if (!bittorrentDownloads.contains(dl)) {
-                bittorrentDownloads.add(dl);
-            }
+            //if (!bittorrentDownloads.contains(dl)) {
+            //    bittorrentDownloads.add(dl);
+            //}
 
             return dl;
         } catch (Throwable e) {
