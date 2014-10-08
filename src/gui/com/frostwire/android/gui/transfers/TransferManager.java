@@ -45,6 +45,7 @@ import com.frostwire.search.soundcloud.SoundcloudSearchResult;
 import com.frostwire.search.torrent.TorrentCrawledSearchResult;
 import com.frostwire.search.torrent.TorrentSearchResult;
 import com.frostwire.search.youtube.YouTubeCrawledSearchResult;
+import com.frostwire.transfers.DownloadTransfer;
 import com.frostwire.transfers.Transfer;
 import com.frostwire.util.ByteUtils;
 import com.frostwire.util.StringUtils;

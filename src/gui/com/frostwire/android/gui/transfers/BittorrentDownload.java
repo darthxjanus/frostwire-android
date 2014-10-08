@@ -18,6 +18,8 @@
 
 package com.frostwire.android.gui.transfers;
 
+import com.frostwire.transfers.DownloadTransfer;
+
 import java.util.List;
 
 /**
