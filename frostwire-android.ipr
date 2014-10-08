@@ -27,12 +27,23 @@
     <option name="SKIP_IMPORT_STATEMENTS" value="false" />
   </component>
   <component name="Encoding" useUTFGuessing="true" native2AsciiForPropertiesFiles="false" />
+  <component name="EntryPointsManager">
+    <entry_points version="2.0" />
+  </component>
+  <component name="FrameworkDetectionExcludesConfiguration">
+    <file type="web" url="file://$PROJECT_DIR$" />
+  </component>
   <component name="GradleSettings">
     <option name="linkedExternalProjectsSettings">
       <GradleProjectSettings>
         <option name="distributionType" value="DEFAULT_WRAPPED" />
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
         <option name="gradleHome" value="/usr/local/Cellar/gradle/2.0/libexec" />
+        <option name="modules">
+          <set>
+            <option value="$PROJECT_DIR$" />
+          </set>
+        </option>
       </GradleProjectSettings>
     </option>
   </component>
@@ -155,6 +166,50 @@
   </component>
   <component name="VcsDirectoryMappings">
     <mapping directory="" vcs="Git" />
+  </component>
+  <component name="libraryTable">
+    <library name="AppiaSDK-2013-21">
+      <CLASSES>
+        <root url="jar://$PROJECT_DIR$/libs/AppiaSDK-2013-21.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="in-app-purchasing-1.0.3">
+      <CLASSES>
+        <root url="jar://$PROJECT_DIR$/libs/in-app-purchasing-1.0.3.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="picasso-2.3.3">
+      <CLASSES>
+        <root url="jar://$PROJECT_DIR$/libs/picasso-2.3.3.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="support-v4-19.1.0">
+      <CLASSES>
+        <root url="jar://$PROJECT_DIR$/libs/support-v4-19.1.0.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="transcommu-android-sdk-v1">
+      <CLASSES>
+        <root url="jar://$PROJECT_DIR$/libs/transcommu-android-sdk-v1.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="transcommu-java-sdk-v1">
+      <CLASSES>
+        <root url="jar://$PROJECT_DIR$/libs/transcommu-java-sdk-v1.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
   </component>
   <component name="masterDetails">
     <states>

@@ -116,7 +116,8 @@ public final class AzureusBittorrentDownload implements BittorrentDownload {
     
     public void enqueue() {
         if (isPausable()) {
-            downloadManager.enqueue();
+            // TODO:BITTORRENT
+            //downloadManager.enqueue();
         }
     }
 

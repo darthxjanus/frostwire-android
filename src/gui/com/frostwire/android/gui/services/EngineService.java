@@ -167,7 +167,8 @@ public class EngineService extends Service implements IEngineService {
 
         state = STATE_STOPPING;
 
-        VuzeManager.getInstance().pause(disconnected);
+        // TODO:BITTORRENT
+        //VuzeManager.getInstance().pause(disconnected);
 
         PeerManager.instance().clear();
 

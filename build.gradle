@@ -12,4 +12,33 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion 19
     buildToolsVersion "20.0.0"
+
+    sourceSets {
+        main {
+            manifest.srcFile 'AndroidManifest.xml'
+            res.srcDirs = ['res']
+            aidl.srcDirs = ['src']
+            assets.srcDirs = ['assets']
+            java {
+                srcDir 'common/components/apache'
+                srcDir 'common/components/core'
+                srcDir 'common/components/gson'
+                srcDir 'common/components/httpserver'
+                srcDir 'common/components/jdownloader'
+                srcDir 'common/components/jmdns'
+                srcDir 'common/components/minicastle'
+                srcDir 'common/components/mp4parser'
+                srcDir 'common/components/okhttp'
+
+                srcDir 'src/apollo_player'
+                srcDir 'src/core'
+                srcDir 'src/gui'
+                srcDir 'src/vuze_stub'
+            }
+        }
+    }
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
 }
