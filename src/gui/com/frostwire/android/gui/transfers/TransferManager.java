@@ -18,6 +18,7 @@
 
 package com.frostwire.android.gui.transfers;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
@@ -38,6 +39,9 @@ import com.frostwire.android.gui.NetworkManager;
 import com.frostwire.android.gui.Peer;
 import com.frostwire.android.gui.services.Engine;
 import com.frostwire.android.gui.util.SystemUtils;
+import com.frostwire.bittorrent.BTDownload;
+import com.frostwire.bittorrent.BTEngine;
+import com.frostwire.bittorrent.BTEngineListener;
 import com.frostwire.logging.Logger;
 import com.frostwire.search.HttpSearchResult;
 import com.frostwire.search.SearchResult;
@@ -326,6 +330,32 @@ public final class TransferManager implements VuzeKeys {
                 }
             }
         }, new DownloadListener());
+        BTEngine engine = BTEngine.getInstance();
+
+        engine.setListener(new BTEngineListener() {
+            @Override
+            public void downloadAdded(BTDownload dl) {
+                String name = dl.getName();
+                if (name != null && name.contains("fetchMagnet - ")) {
+                    return;
+                }
+
+                File savePath = dl.getSavePath();
+
+//                if (savePath != null && savePath.getParentFile().getAbsolutePath().equals(UpdateSettings.UPDATES_DIR.getAbsolutePath())) {
+//                    LOG.info("Update download: " + savePath);
+//                    return;
+//                }
+
+//                if (CommonUtils.isPortable()) {
+//                    updateDownloadManagerPortableSaveLocation(downloadManager);
+//                }
+
+                bittorrentDownloads.add(dl);
+            }
+        });
+
+        engine.restoreDownloads();
     }
 
     boolean remove(Transfer transfer) {
@@ -384,9 +414,16 @@ public final class TransferManager implements VuzeKeys {
     }
 
     private static BittorrentDownload createBittorrentDownload(TransferManager manager, TorrentSearchResult sr) {
+        if (sr instanceof TorrentCrawledSearchResult) {
+            BTEngine.getInstance().download((TorrentCrawledSearchResult)sr, null);
+        }
+        return null;
+        // TODO:BITTORRENT
+        /*
         if (StringUtils.isNullOrEmpty(sr.getHash())) {
             return new TorrentFetcherDownload(manager, new TorrentSearchResultInfo(sr));
         } else {
+
             VuzeDownloadManager dm = VuzeManager.getInstance().find(ByteUtils.decodeHex(sr.getHash()));
             if (dm == null) {// new download, I need to download the torrent
                 return new TorrentFetcherDownload(manager, new TorrentSearchResultInfo(sr));
@@ -400,7 +437,7 @@ public final class TransferManager implements VuzeKeys {
                 }
             }
             return new AzureusBittorrentDownload(manager, dm);
-        }
+        }*/
     }
 
     private BittorrentDownload newBittorrentDownload(TorrentSearchResult sr) {

@@ -18,8 +18,10 @@
 
 package com.frostwire.android.gui;
 
+import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -36,11 +38,14 @@ import com.frostwire.android.gui.services.Engine;
 import com.frostwire.android.gui.util.SystemUtils;
 import com.frostwire.android.util.HttpResponseCache;
 import com.frostwire.android.util.ImageLoader;
+import com.frostwire.bittorrent.BTContext;
+import com.frostwire.bittorrent.BTEngine;
 import com.frostwire.logging.Logger;
 import com.frostwire.search.CrawlPagedWebSearchPerformer;
 import com.frostwire.util.DirectoryUtils;
 import com.frostwire.vuze.VuzeConfiguration;
 import com.frostwire.vuze.VuzeManager;
+import org.gudy.azureus2.core3.util.protocol.AzURLStreamHandlerFactory;
 
 /**
  * 
@@ -83,6 +88,9 @@ public class MainApplication extends Application {
             VuzeConfiguration conf = new VuzeConfiguration(azureusPath, torrentsPath, messages);
             VuzeManager.setConfiguration(conf);
 
+            // TODO:BITTORRENT
+            startBittorrentCore();
+
             NetworkManager.create(this);
             Librarian.create(this);
             Engine.create(this);
@@ -100,6 +108,45 @@ public class MainApplication extends Application {
             String stacktrace = Log.getStackTraceString(e);
             throw new RuntimeException("MainApplication Create exception: " + stacktrace, e);
         }
+    }
+
+    private void startBittorrentCore() {
+        // this hack is only due to the remaining vuze TOTorrent code
+        URL.setURLStreamHandlerFactory(new AzURLStreamHandlerFactory());
+
+        //SharingSettings.initTorrentDataDirSetting();
+        //SharingSettings.initTorrentsDirSetting();
+
+        File homeDir = SystemUtils.getAzureusDirectory(this);//new File(CommonUtils.getUserSettingsDir() + File.separator + "libtorrent" + File.separator);
+        if (!homeDir.exists()) {
+            homeDir.mkdirs();
+        }
+
+        int port0 = 20000;
+        int port1 = 50000;
+
+        //if (ConnectionSettings.MANUAL_PORT_RANGE.getValue()) {
+        //    port0 = ConnectionSettings.PORT_RANGE_0.getValue();
+        //    port1 = ConnectionSettings.PORT_RANGE_1.getValue();
+        //}
+
+        String iface = "0.0.0.0";
+
+        //if (ConnectionSettings.CUSTOM_NETWORK_INTERFACE.getValue()) {
+        //    iface = ConnectionSettings.CUSTOM_INETADRESS.getValue();
+        //}
+
+        BTContext ctx = new BTContext();
+        ctx.homeDir = homeDir;
+        ctx.torrentsDir = SystemUtils.getTorrentsDirectory();
+        ctx.dataDir = SystemUtils.getTorrentDataDirectory();
+        ctx.port0 = port0;
+        ctx.port1 = port1;
+        ctx.iface = iface;
+
+        BTEngine.ctx = ctx;
+
+        BTEngine.getInstance().loadSettings();
     }
 
     private String getDeviceId() {

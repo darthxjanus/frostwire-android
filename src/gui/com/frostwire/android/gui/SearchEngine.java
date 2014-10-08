@@ -25,6 +25,7 @@ import com.frostwire.android.core.ConfigurationManager;
 import com.frostwire.android.core.Constants;
 import com.frostwire.android.gui.util.OSUtils;
 import com.frostwire.logging.Logger;
+import com.frostwire.search.CrawlPagedWebSearchPerformer;
 import com.frostwire.search.SearchPerformer;
 import com.frostwire.search.appia.AppiaSearchPerformer;
 import com.frostwire.search.appia.AppiaSearchPerformer.AppiaSearchThrottle;
@@ -64,6 +65,8 @@ public abstract class SearchEngine {
         this.name = name;
         this.preferenceKey = preferenceKey;
         this.active = true;
+
+        CrawlPagedWebSearchPerformer.setMagnetDownloader(new LibTorrentMagnetDownloader());
     }
 
     public String getName() {
