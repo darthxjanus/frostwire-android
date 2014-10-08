@@ -34,6 +34,4 @@ interface TorrentDownloadInfo {
     public long getSize();
 
     public String getHash();
-
-    public String getRelativePath();
 }

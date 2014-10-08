@@ -219,9 +219,10 @@ public class TorrentFetcherDownload implements BittorrentDownload {
                 try {
 
                     Set<String> selection = new HashSet<String>();
-                    if (info.getRelativePath() != null) {
-                        selection.add(info.getRelativePath());
-                    }
+                    // TODO:BITORRENT
+                    //if (info.getRelativePath() != null) {
+                    //    selection.add(info.getRelativePath());
+                    //}
                     VuzeDownloadManager dm = manager.createVDM(dl.getFile().getAbsolutePath(), selection);
 
                     delegate = new AzureusBittorrentDownload(manager, dm);

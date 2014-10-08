@@ -33,6 +33,7 @@
   <component name="FrameworkDetectionExcludesConfiguration">
     <file type="web" url="file://$PROJECT_DIR$" />
     <file type="web" url="file://$PROJECT_DIR$/../frostwire-common/apache" />
+    <file type="web" url="file://$PROJECT_DIR$/../frostwire-common/core" />
     <file type="web" url="file://$PROJECT_DIR$/../frostwire-common/gson" />
     <file type="web" url="file://$PROJECT_DIR$/../frostwire-common/httpserver" />
     <file type="web" url="file://$PROJECT_DIR$/../frostwire-common/jdownloader" />

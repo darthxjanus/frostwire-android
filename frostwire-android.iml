@@ -44,7 +44,6 @@
       <sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/assets" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/main/java" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/common/components/core" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/apollo_player" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/core" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/gui" isTestSource="false" />
@@ -82,6 +81,9 @@
     <content url="file://$MODULE_DIR$/../frostwire-common/apache">
       <sourceFolder url="file://$MODULE_DIR$/../frostwire-common/apache" isTestSource="false" />
     </content>
+    <content url="file://$MODULE_DIR$/../frostwire-common/core">
+      <sourceFolder url="file://$MODULE_DIR$/../frostwire-common/core" isTestSource="false" />
+    </content>
     <content url="file://$MODULE_DIR$/../frostwire-common/gson">
       <sourceFolder url="file://$MODULE_DIR$/../frostwire-common/gson" isTestSource="false" />
     </content>
@@ -99,6 +101,9 @@
     </content>
     <content url="file://$MODULE_DIR$/../frostwire-common/okhttp">
       <sourceFolder url="file://$MODULE_DIR$/../frostwire-common/okhttp" isTestSource="false" />
+    </content>
+    <content url="file://$MODULE_DIR$/../frostwire-common/vuze">
+      <sourceFolder url="file://$MODULE_DIR$/../frostwire-common/vuze" isTestSource="false" />
     </content>
     <content url="file://$MODULE_DIR$/../frostwire-jlibtorrent/src">
       <sourceFolder url="file://$MODULE_DIR$/../frostwire-jlibtorrent/src" isTestSource="false" />

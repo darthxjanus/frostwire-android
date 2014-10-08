@@ -57,9 +57,4 @@ class TorrentUrlInfo implements TorrentDownloadInfo {
     public String getHash() {
         return null;
     }
-
-    @Override
-    public String getRelativePath() {
-        return null;
-    }
 }

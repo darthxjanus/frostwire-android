@@ -22,13 +22,14 @@ android {
             jniLibs.srcDir 'libs'
             java {
                 srcDir '../frostwire-common/apache'
-                srcDir 'common/components/core'
+                srcDir '../frostwire-common/core'
                 srcDir '../frostwire-common/gson'
                 srcDir '../frostwire-common/httpserver'
                 srcDir '../frostwire-common/jdownloader'
                 srcDir '../frostwire-common/jmdns'
                 srcDir '../frostwire-common/mp4parser'
                 srcDir '../frostwire-common/okhttp'
+                srcDir '../frostwire-common/vuze'
 
                 srcDir '../frostwire-jlibtorrent/src'
 
