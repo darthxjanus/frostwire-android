@@ -20,7 +20,7 @@ public class VuzeManager {
         
     }
 
-    public void pause() {
+    public void pause(boolean flag) {
         // TODO Auto-generated method stub
         
     }
