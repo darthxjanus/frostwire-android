@@ -199,6 +199,13 @@
       <JAVADOC />
       <SOURCES />
     </library>
+    <library name="picasso-2.3.4">
+      <CLASSES>
+        <root url="jar://$PROJECT_DIR$/libs/picasso-2.3.4.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
     <library name="support-v4-19.1.0">
       <CLASSES>
         <root url="jar://$PROJECT_DIR$/libs/support-v4-19.1.0.jar!/" />
