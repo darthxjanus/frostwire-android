@@ -18,20 +18,12 @@
 
 package com.frostwire.android.gui;
 
-import java.io.File;
-import java.io.IOException;
-import java.lang.reflect.Field;
-import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
-
 import android.app.Application;
 import android.content.Context;
 import android.provider.Settings.Secure;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.ViewConfiguration;
-
 import com.frostwire.android.R;
 import com.frostwire.android.core.ConfigurationManager;
 import com.frostwire.android.gui.services.Engine;
@@ -47,11 +39,16 @@ import com.frostwire.vuze.VuzeConfiguration;
 import com.frostwire.vuze.VuzeManager;
 import org.gudy.azureus2.core3.util.protocol.AzURLStreamHandlerFactory;
 
+import java.io.File;
+import java.io.IOException;
+import java.lang.reflect.Field;
+import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
+
 /**
- * 
  * @author gubatron
  * @author aldenml
- * 
  */
 public class MainApplication extends Application {
 
@@ -122,19 +119,10 @@ public class MainApplication extends Application {
             homeDir.mkdirs();
         }
 
-        int port0 = 20000;
-        int port1 = 50000;
-
-        //if (ConnectionSettings.MANUAL_PORT_RANGE.getValue()) {
-        //    port0 = ConnectionSettings.PORT_RANGE_0.getValue();
-        //    port1 = ConnectionSettings.PORT_RANGE_1.getValue();
-        //}
+        int port0 = 0;
+        int port1 = 0;
 
         String iface = "0.0.0.0";
-
-        //if (ConnectionSettings.CUSTOM_NETWORK_INTERFACE.getValue()) {
-        //    iface = ConnectionSettings.CUSTOM_INETADRESS.getValue();
-        //}
 
         BTContext ctx = new BTContext();
         ctx.homeDir = homeDir;
@@ -143,6 +131,7 @@ public class MainApplication extends Application {
         ctx.port0 = port0;
         ctx.port1 = port1;
         ctx.iface = iface;
+        ctx.optimizeMemory = true;
 
         BTEngine.ctx = ctx;
     }
