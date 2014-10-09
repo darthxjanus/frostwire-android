@@ -1,0 +1,52 @@
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:0.12.2'
+    }
+}
+
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 15
+    buildToolsVersion "20.0.0"
+
+    sourceSets {
+        main {
+            manifest.srcFile 'AndroidManifest.xml'
+            res.srcDirs = ['res']
+            aidl.srcDirs = ['src']
+            assets.srcDirs = ['assets']
+            jniLibs.srcDir 'libs'
+            java {
+                srcDir '../frostwire-common/apache'
+                srcDir '../frostwire-common/core'
+                srcDir '../frostwire-common/gson'
+                srcDir '../frostwire-common/httpserver'
+                srcDir '../frostwire-common/jdownloader'
+                srcDir '../frostwire-common/jmdns'
+                srcDir '../frostwire-common/mp4parser'
+                srcDir '../frostwire-common/okhttp'
+                srcDir '../frostwire-common/vuze'
+
+                srcDir '../frostwire-jlibtorrent/src'
+
+                srcDir 'src/apollo_player'
+                srcDir 'src/core'
+                srcDir 'src/gui'
+                srcDir 'src/vuze_stub'
+            }
+            resources {
+                srcDir '../frostwire-common/mp4parser'
+                include '**/*.properties'
+                exclude '**/*.java'
+            }
+        }
+    }
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+}
