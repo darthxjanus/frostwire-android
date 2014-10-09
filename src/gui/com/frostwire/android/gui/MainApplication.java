@@ -39,7 +39,6 @@ import com.frostwire.vuze.VuzeConfiguration;
 import com.frostwire.vuze.VuzeManager;
 import org.gudy.azureus2.core3.util.protocol.AzURLStreamHandlerFactory;
 
-import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.net.URL;
@@ -79,10 +78,9 @@ public class MainApplication extends Application {
             ConfigurationManager.create(this);
 
             // important setup at the very beginning
-            String azureusPath = SystemUtils.getAzureusDirectory(this).getAbsolutePath();
             String torrentsPath = SystemUtils.getTorrentsDirectory().getAbsolutePath();
             Map<String, String> messages = getVuzeMessages(this);
-            VuzeConfiguration conf = new VuzeConfiguration(azureusPath, torrentsPath, messages);
+            VuzeConfiguration conf = new VuzeConfiguration(null, torrentsPath, messages);
             VuzeManager.setConfiguration(conf);
 
             // TODO:BITTORRENT
@@ -111,26 +109,13 @@ public class MainApplication extends Application {
         // this hack is only due to the remaining vuze TOTorrent code
         URL.setURLStreamHandlerFactory(new AzURLStreamHandlerFactory());
 
-        //SharingSettings.initTorrentDataDirSetting();
-        //SharingSettings.initTorrentsDirSetting();
-
-        File homeDir = SystemUtils.getAzureusDirectory(this);//new File(CommonUtils.getUserSettingsDir() + File.separator + "libtorrent" + File.separator);
-        if (!homeDir.exists()) {
-            homeDir.mkdirs();
-        }
-
-        int port0 = 0;
-        int port1 = 0;
-
-        String iface = "0.0.0.0";
-
         BTContext ctx = new BTContext();
-        ctx.homeDir = homeDir;
+        ctx.homeDir = SystemUtils.getLibTorrentDirectory(this);
         ctx.torrentsDir = SystemUtils.getTorrentsDirectory();
         ctx.dataDir = SystemUtils.getTorrentDataDirectory();
-        ctx.port0 = port0;
-        ctx.port1 = port1;
-        ctx.iface = iface;
+        ctx.port0 = 0;
+        ctx.port1 = 0;
+        ctx.iface = "0.0.0.0";
         ctx.optimizeMemory = true;
 
         BTEngine.ctx = ctx;
