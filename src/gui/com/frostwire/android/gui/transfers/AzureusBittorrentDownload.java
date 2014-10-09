@@ -25,6 +25,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
+import com.frostwire.transfers.TransferItem;
 import com.frostwire.util.ByteUtils;
 import com.frostwire.vuze.VuzeDownloadManager;
 import com.frostwire.vuze.VuzeFileInfo;
@@ -43,7 +44,7 @@ public final class AzureusBittorrentDownload implements BittorrentDownload {
     private final VuzeDownloadManager downloadManager;
     private final String hash;
 
-    private List<BittorrentDownloadItem> items;
+    private List<TransferItem> items;
 
     private boolean partialDownload;
     private Set<VuzeFileInfo> fileInfoSet;
@@ -107,7 +108,7 @@ public final class AzureusBittorrentDownload implements BittorrentDownload {
         return downloadManager.isSeeding();
     }
 
-    public List<? extends BittorrentDownloadItem> getItems() {
+    public List<TransferItem> getItems() {
         if (items.size() == 1) {
             return Collections.emptyList();
         }
@@ -196,11 +197,6 @@ public final class AzureusBittorrentDownload implements BittorrentDownload {
     }
 
     @Override
-    public List<? extends BittorrentDownloadItem> getBittorrentItems() {
-        return items;
-    }
-
-    @Override
     public String getDetailsUrl() {
         return null;
     }
@@ -211,7 +207,7 @@ public final class AzureusBittorrentDownload implements BittorrentDownload {
             fileInfoSet = VuzeUtils.getFileInfoSet(downloadManager, InfoSetQuery.NO_SKIPPED);
             partialDownload = !VuzeUtils.getFileInfoSet(downloadManager, InfoSetQuery.SKIPPED).isEmpty();
 
-            items = new ArrayList<BittorrentDownloadItem>(fileInfoSet.size());
+            items = new ArrayList<TransferItem>(fileInfoSet.size());
             for (VuzeFileInfo fileInfo : fileInfoSet) {
                 items.add(new AzureusBittorrentDownloadItem(fileInfo));
             }

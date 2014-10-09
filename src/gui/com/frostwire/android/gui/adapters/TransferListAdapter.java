@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import com.frostwire.transfers.TransferItem;
 import org.apache.commons.io.FilenameUtils;
 
 import android.app.Dialog;
@@ -58,7 +59,6 @@ import com.frostwire.android.gui.transfers.PeerHttpUpload;
 import com.frostwire.android.gui.transfers.SoundcloudDownload;
 import com.frostwire.android.gui.transfers.TorrentFetcherDownload;
 import com.frostwire.android.gui.transfers.Transfer;
-import com.frostwire.android.gui.transfers.TransferItem;
 import com.frostwire.android.gui.transfers.YouTubeDownload;
 import com.frostwire.android.gui.util.UIUtils;
 import com.frostwire.android.gui.views.MenuAction;
@@ -262,8 +262,8 @@ public class TransferListAdapter extends BaseExpandableListAdapter {
             title = download.getDisplayName();
 
             //If it's a torrent download with a single file, we should be able to open it.
-            if (download.isComplete() && download.getBittorrentItems().size() == 1) {
-                BittorrentDownloadItem transferItem = (BittorrentDownloadItem) download.getBittorrentItems().get(0);
+            if (download.isComplete() && download.getItems().size() == 1) {
+                BittorrentDownloadItem transferItem = (BittorrentDownloadItem) download.getItems().get(0);
                 String path = transferItem.getSavePath().getAbsolutePath();
                 String mimeType = UIUtils.getMimeType(path);
                 items.add(new OpenMenuAction(context, path, mimeType));
@@ -344,8 +344,8 @@ public class TransferListAdapter extends BaseExpandableListAdapter {
 
                 if (item instanceof BittorrentDownload) {
                     BittorrentDownload bItem = (BittorrentDownload) item;
-                    if (bItem.getBittorrentItems().size() > 0) {
-                        BittorrentDownloadItem transferItem = bItem.getBittorrentItems().get(0);
+                    if (bItem.getItems().size() > 0) {
+                        BittorrentDownloadItem transferItem = (BittorrentDownloadItem)bItem.getItems().get(0);
                         path = transferItem.getSavePath().getAbsolutePath();
                         extension = FilenameUtils.getExtension(path);
                     }

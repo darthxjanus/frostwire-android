@@ -48,6 +48,4 @@ public interface BittorrentDownload extends DownloadTransfer {
     public void pause();
 
     public void resume();
-    
-    public List<? extends BittorrentDownloadItem> getBittorrentItems();
 }
