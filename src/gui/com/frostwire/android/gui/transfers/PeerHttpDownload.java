@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.frostwire.transfers.TransferItem;
+import com.frostwire.transfers.TransferState;
 import org.apache.commons.io.FilenameUtils;
 
 import android.os.SystemClock;
@@ -51,11 +52,11 @@ public final class PeerHttpDownload implements DownloadTransfer {
 
     private static final String TAG = "FW.PeerHttpDownload";
 
-    private static final int STATUS_DOWNLOADING = 1;
-    private static final int STATUS_COMPLETE = 2;
-    private static final int STATUS_ERROR = 3;
-    private static final int STATUS_CANCELLED = 4;
-    private static final int STATUS_WAITING = 5;
+    private static final TransferState STATUS_DOWNLOADING = TransferState.DOWNLOADING;
+    private static final TransferState STATUS_COMPLETE = TransferState.COMPLETE;
+    private static final TransferState STATUS_ERROR = TransferState.ERROR;
+    private static final TransferState STATUS_CANCELLED = TransferState.CANCELED;
+    private static final TransferState STATUS_WAITING = TransferState.WAITING;
 
     private static final int SPEED_AVERAGE_CALCULATION_INTERVAL_MILLISECONDS = 1000;
 
@@ -65,7 +66,7 @@ public final class PeerHttpDownload implements DownloadTransfer {
     private final Date dateCreated;
     private final File savePath;
 
-    private int status;
+    private TransferState status;
     private long bytesReceived;
     public long averageSpeed; // in bytes
 
@@ -90,12 +91,17 @@ public final class PeerHttpDownload implements DownloadTransfer {
         return fd;
     }
 
+    @Override
+    public String getName() {
+        return getDetailsUrl();
+    }
+
     public String getDisplayName() {
         return fd.title;
     }
 
-    public String getStatus() {
-        return getStatusString(status);
+    public TransferState getState() {
+        return status;
     }
 
     public int getProgress() {
@@ -106,7 +112,7 @@ public final class PeerHttpDownload implements DownloadTransfer {
         return fd.fileSize;
     }
 
-    public Date getDateCreated() {
+    public Date getCreated() {
         return dateCreated;
     }
 
@@ -147,11 +153,11 @@ public final class PeerHttpDownload implements DownloadTransfer {
         return savePath;
     }
 
-    public void cancel() {
-        cancel(false);
+    public void remove() {
+        remove(false);
     }
 
-    public void cancel(boolean deleteData) {
+    public void remove(boolean deleteData) {
         if (status != STATUS_COMPLETE) {
             status = STATUS_CANCELLED;
         }
@@ -186,31 +192,6 @@ public final class PeerHttpDownload implements DownloadTransfer {
                 }
             }
         });
-    }
-
-    private String getStatusString(int status) {
-        int resId;
-        switch (status) {
-        case STATUS_DOWNLOADING:
-            resId = R.string.peer_http_download_status_downloading;
-            break;
-        case STATUS_COMPLETE:
-            resId = R.string.peer_http_download_status_complete;
-            break;
-        case STATUS_ERROR:
-            resId = R.string.peer_http_download_status_error;
-            break;
-        case STATUS_CANCELLED:
-            resId = R.string.peer_http_download_status_cancelled;
-            break;
-        case STATUS_WAITING:
-            resId = R.string.peer_http_download_status_waiting;
-            break;
-        default:
-            resId = R.string.peer_http_download_status_unknown;
-            break;
-        }
-        return String.valueOf(resId);
     }
 
     private void updateAverageDownloadSpeed() {
@@ -309,7 +290,6 @@ public final class PeerHttpDownload implements DownloadTransfer {
         }
     }
 
-    @Override
     public String getDetailsUrl() {
         return getPeer().getDownloadUri(getFD());
     }

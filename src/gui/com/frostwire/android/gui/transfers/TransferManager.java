@@ -45,6 +45,7 @@ import com.frostwire.search.soundcloud.SoundcloudSearchResult;
 import com.frostwire.search.torrent.TorrentCrawledSearchResult;
 import com.frostwire.search.torrent.TorrentSearchResult;
 import com.frostwire.search.youtube.YouTubeCrawledSearchResult;
+import com.frostwire.transfers.Transfer;
 import com.frostwire.util.ByteUtils;
 import com.frostwire.util.StringUtils;
 import com.frostwire.uxstats.UXAction;
@@ -119,9 +120,10 @@ public final class TransferManager implements VuzeKeys {
         synchronized (alreadyDownloadingMonitor) {
             for (DownloadTransfer dt : downloads) {
                 if (dt.isDownloading()) {
-                    if (dt.getDetailsUrl() != null && dt.getDetailsUrl().equals(detailsUrl)) {
-                        return true;
-                    }
+                    // TODO:BITTORRENT
+                    //if (dt.getDetailsUrl() != null && dt.getDetailsUrl().equals(detailsUrl)) {
+                    //    return true;
+                    //}
                 }
             }
         }
@@ -210,10 +212,10 @@ public final class TransferManager implements VuzeKeys {
                 if (transfer instanceof BittorrentDownload) {
                     BittorrentDownload bd = (BittorrentDownload) transfer;
                     if (bd != null && bd.isResumable()) {
-                        bd.cancel();
+                        bd.remove();
                     }
                 } else {
-                    transfer.cancel();
+                    transfer.remove();
                 }
             }
         }
@@ -489,13 +491,13 @@ public final class TransferManager implements VuzeKeys {
             if (t instanceof DownloadTransfer) {
                 DownloadTransfer d = (DownloadTransfer) t;
                 if (!d.isComplete() && d.isDownloading()) {
-                    d.cancel();
+                    d.remove();
                 }
             } else if (t instanceof UploadTransfer) {
                 UploadTransfer u = (UploadTransfer) t;
 
                 if (!u.isComplete() && u.isUploading()) {
-                    u.cancel();
+                    u.remove();
                 }
             }
         }

@@ -19,6 +19,7 @@
 package com.frostwire.android.gui.transfers;
 
 import com.frostwire.transfers.TransferItem;
+import com.frostwire.transfers.TransferState;
 
 import java.io.File;
 import java.util.Collections;
@@ -78,8 +79,8 @@ final class InvalidBittorrentDownload implements BittorrentDownload, InvalidTran
     }
 
     @Override
-    public String getStatus() {
-        return null;
+    public TransferState getState() {
+        return TransferState.ERROR;
     }
 
     @Override
@@ -93,7 +94,7 @@ final class InvalidBittorrentDownload implements BittorrentDownload, InvalidTran
     }
 
     @Override
-    public Date getDateCreated() {
+    public Date getCreated() {
         return null;
     }
 
@@ -102,7 +103,7 @@ final class InvalidBittorrentDownload implements BittorrentDownload, InvalidTran
     }
 
     @Override
-    public void cancel() {
+    public void remove() {
     }
 
     @Override
@@ -168,11 +169,11 @@ final class InvalidBittorrentDownload implements BittorrentDownload, InvalidTran
     }
 
     @Override
-    public void cancel(boolean deleteData) {
+    public void remove(boolean deleteData) {
     }
 
     @Override
-    public String getDetailsUrl() {
+    public String getName() {
         return null;
     }
 }

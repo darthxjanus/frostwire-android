@@ -29,6 +29,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import com.frostwire.android.R;
 import com.frostwire.logging.Logger;
 import com.frostwire.transfers.TransferItem;
+import com.frostwire.transfers.TransferState;
 import com.frostwire.vuze.VuzeDownloadManager;
 import com.frostwire.vuze.VuzeTorrentDownloadListener;
 import com.frostwire.vuze.VuzeTorrentDownloader;
@@ -46,7 +47,7 @@ public class TorrentFetcherDownload implements BittorrentDownload {
     private final TorrentDownloadInfo info;
     private final Date dateCreated;
 
-    private int statusResId;
+    private TransferState statusResId;
     private final VuzeTorrentDownloader torrentDownloader;
 
     private BittorrentDownload delegate;
@@ -58,7 +59,7 @@ public class TorrentFetcherDownload implements BittorrentDownload {
         this.info = info;
         this.dateCreated = new Date();
 
-        this.statusResId = R.string.torrent_fetcher_download_status_downloading_torrent;
+        this.statusResId = TransferState.DOWNLOADING_TORRENT;
 
         this.torrentDownloader = new VuzeTorrentDownloader(info.getTorrentUrl(), info.getDetailsUrl());
         this.torrentDownloader.setListener(new TorrentDownloaderListener());
@@ -69,12 +70,17 @@ public class TorrentFetcherDownload implements BittorrentDownload {
         return delegate;
     }
 
+    @Override
+    public String getName() {
+        return getDetailsUrl();
+    }
+
     public String getDisplayName() {
         return delegate != null ? delegate.getDisplayName() : info.getDisplayName();
     }
 
-    public String getStatus() {
-        return delegate != null ? delegate.getStatus() : String.valueOf(statusResId);
+    public TransferState getState() {
+        return delegate != null ? delegate.getState() : statusResId;
     }
 
     public int getProgress() {
@@ -85,8 +91,8 @@ public class TorrentFetcherDownload implements BittorrentDownload {
         return delegate != null ? delegate.getSize() : info.getSize();
     }
 
-    public Date getDateCreated() {
-        return delegate != null ? delegate.getDateCreated() : dateCreated;
+    public Date getCreated() {
+        return delegate != null ? delegate.getCreated() : dateCreated;
     }
 
     public List<TransferItem> getItems() {
@@ -160,16 +166,16 @@ public class TorrentFetcherDownload implements BittorrentDownload {
     }
 
     @Override
-    public void cancel() {
-        cancel(false);
+    public void remove() {
+        remove(false);
     }
 
     @Override
-    public void cancel(boolean deleteData) {
-        statusResId = R.string.torrent_fetcher_download_status_canceled;
+    public void remove(boolean deleteData) {
+        statusResId = TransferState.CANCELED;
 
         if (delegate != null) {
-            delegate.cancel(deleteData);
+            delegate.remove(deleteData);
         } else {
             removed = true;
             try {
@@ -228,7 +234,7 @@ public class TorrentFetcherDownload implements BittorrentDownload {
                     delegate = new AzureusBittorrentDownload(manager, dm);
 
                 } catch (Throwable e) {
-                    statusResId = R.string.torrent_fetcher_download_status_error;
+                    statusResId = TransferState.ERROR;
                     LOG.error("Error creating the actual torrent download", e);
                 }
             }
@@ -239,11 +245,10 @@ public class TorrentFetcherDownload implements BittorrentDownload {
             if (removed) {
                 return;
             }
-            statusResId = R.string.torrent_fetcher_download_status_error;
+            statusResId = TransferState.ERROR;
         }
     }
 
-    @Override
     public String getDetailsUrl() {
         return info.getDetailsUrl();
     }

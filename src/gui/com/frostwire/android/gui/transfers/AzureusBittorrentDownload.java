@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Set;
 
 import com.frostwire.transfers.TransferItem;
+import com.frostwire.transfers.TransferState;
 import com.frostwire.util.ByteUtils;
 import com.frostwire.vuze.VuzeDownloadManager;
 import com.frostwire.vuze.VuzeFileInfo;
@@ -58,12 +59,19 @@ public final class AzureusBittorrentDownload implements BittorrentDownload {
         refreshData(); // super mutable
     }
 
+    @Override
+    public String getName() {
+        return getDisplayName();
+    }
+
     public String getDisplayName() {
         return downloadManager.getDisplayName();
     }
 
-    public String getStatus() {
-        return downloadManager.getStatus();
+    public TransferState getState() {
+        // TODO:BITTORRENT
+        //return downloadManager.getStatus();
+        return TransferState.ERROR;
     }
 
     public int getProgress() {
@@ -157,7 +165,7 @@ public final class AzureusBittorrentDownload implements BittorrentDownload {
         return downloadManager.getETA();
     }
 
-    public Date getDateCreated() {
+    public Date getCreated() {
         return downloadManager.getCreationDate();
     }
 
@@ -182,23 +190,18 @@ public final class AzureusBittorrentDownload implements BittorrentDownload {
     }
 
     @Override
-    public void cancel() {
-        cancel(false);
+    public void remove() {
+        remove(false);
     }
 
     @Override
-    public void cancel(boolean deleteData) {
+    public void remove(boolean deleteData) {
         manager.remove(this);
         VuzeUtils.removeDownload(downloadManager, deleteData, deleteData);
     }
 
     VuzeDownloadManager getDownloadManager() {
         return downloadManager;
-    }
-
-    @Override
-    public String getDetailsUrl() {
-        return null;
     }
 
     private void refreshData() {

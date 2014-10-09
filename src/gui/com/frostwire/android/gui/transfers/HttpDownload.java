@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.frostwire.transfers.TransferItem;
+import com.frostwire.transfers.TransferState;
 import org.apache.commons.io.FilenameUtils;
 
 import android.os.SystemClock;
@@ -53,12 +54,12 @@ public final class HttpDownload implements DownloadTransfer {
 
     private static final String TAG = "FW.HttpDownload";
 
-    static final int STATUS_DOWNLOADING = 1;
-    static final int STATUS_COMPLETE = 2;
-    static final int STATUS_ERROR = 3;
-    static final int STATUS_CANCELLED = 4;
-    static final int STATUS_WAITING = 5;
-    static final int STATUS_UNCOMPRESSING = 6;
+    static final TransferState STATUS_DOWNLOADING = TransferState.DOWNLOADING;
+    static final TransferState STATUS_COMPLETE = TransferState.COMPLETE;
+    static final TransferState STATUS_ERROR = TransferState.ERROR;
+    static final TransferState STATUS_CANCELLED = TransferState.CANCELED;
+    static final TransferState STATUS_WAITING = TransferState.WAITING;
+    static final TransferState STATUS_UNCOMPRESSING = TransferState.UNCOMPRESSING;
 
     private static final int SPEED_AVERAGE_CALCULATION_INTERVAL_MILLISECONDS = 1000;
 
@@ -67,7 +68,7 @@ public final class HttpDownload implements DownloadTransfer {
     private final Date dateCreated;
     private final File savePath;
 
-    private int status;
+    private TransferState status;
     private long bytesReceived;
     private long averageSpeed; // in bytes
 
@@ -99,12 +100,17 @@ public final class HttpDownload implements DownloadTransfer {
         this.listener = listener;
     }
 
+    @Override
+    public String getName() {
+        return getDetailsUrl();
+    }
+
     public String getDisplayName() {
         return link.getDisplayName();
     }
 
-    public String getStatus() {
-        return getStatusString(status);
+    public TransferState getState() {
+        return status;
     }
 
     public int getProgress() {
@@ -119,7 +125,7 @@ public final class HttpDownload implements DownloadTransfer {
         return link.getSize();
     }
 
-    public Date getDateCreated() {
+    public Date getCreated() {
         return dateCreated;
     }
 
@@ -168,11 +174,11 @@ public final class HttpDownload implements DownloadTransfer {
         return savePath;
     }
 
-    public void cancel() {
-        cancel(false);
+    public void remove() {
+        remove(false);
     }
 
-    public void cancel(boolean deleteData) {
+    public void remove(boolean deleteData) {
         if (status != STATUS_COMPLETE) {
             status = STATUS_CANCELLED;
         }
@@ -184,10 +190,6 @@ public final class HttpDownload implements DownloadTransfer {
 
     public void start() {
         start(0, 0);
-    }
-
-    int getStatusCode() {
-        return status;
     }
 
     /**
@@ -211,34 +213,6 @@ public final class HttpDownload implements DownloadTransfer {
                 }
             }
         });
-    }
-
-    private String getStatusString(int status) {
-        int resId;
-        switch (status) {
-        case STATUS_DOWNLOADING:
-            resId = R.string.peer_http_download_status_downloading;
-            break;
-        case STATUS_COMPLETE:
-            resId = R.string.peer_http_download_status_complete;
-            break;
-        case STATUS_ERROR:
-            resId = R.string.peer_http_download_status_error;
-            break;
-        case STATUS_CANCELLED:
-            resId = R.string.peer_http_download_status_cancelled;
-            break;
-        case STATUS_WAITING:
-            resId = R.string.peer_http_download_status_waiting;
-            break;
-        case STATUS_UNCOMPRESSING:
-            resId = R.string.http_download_status_uncompressing;
-            break;
-        default:
-            resId = R.string.peer_http_download_status_unknown;
-            break;
-        }
-        return String.valueOf(resId);
     }
 
     private void updateAverageDownloadSpeed() {
@@ -370,7 +344,6 @@ public final class HttpDownload implements DownloadTransfer {
         }
     }
 
-    @Override
     public String getDetailsUrl() {
         return link.getUrl();
     }

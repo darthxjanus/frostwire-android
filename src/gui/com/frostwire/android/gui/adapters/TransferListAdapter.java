@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import com.frostwire.transfers.Transfer;
 import com.frostwire.transfers.TransferItem;
 import org.apache.commons.io.FilenameUtils;
 
@@ -58,7 +59,6 @@ import com.frostwire.android.gui.transfers.PeerHttpDownload;
 import com.frostwire.android.gui.transfers.PeerHttpUpload;
 import com.frostwire.android.gui.transfers.SoundcloudDownload;
 import com.frostwire.android.gui.transfers.TorrentFetcherDownload;
-import com.frostwire.android.gui.transfers.Transfer;
 import com.frostwire.android.gui.transfers.YouTubeDownload;
 import com.frostwire.android.gui.util.UIUtils;
 import com.frostwire.android.gui.views.MenuAction;
@@ -417,12 +417,12 @@ public class TransferListAdapter extends BaseExpandableListAdapter {
 
         if (download instanceof TorrentFetcherDownload) {
             if (((TorrentFetcherDownload) download).getDelegate() != null) {
-                status.setText(download.getStatus());
+                status.setText(download.getState().toString());
             } else {
-                status.setText(getStatusFromResId(download.getStatus()));
+                status.setText(download.getState().toString());
             }
         } else {
-            status.setText(download.getStatus());
+            status.setText(download.getState().toString());
         }
 
         speed.setText(UIUtils.getBytesInHuman(download.getDownloadSpeed()) + "/s");
@@ -446,7 +446,7 @@ public class TransferListAdapter extends BaseExpandableListAdapter {
         peers.setText("");
         title.setText(download.getDisplayName());
         progress.setProgress(download.getProgress());
-        status.setText(getStatusFromResId(download.getStatus()));
+        status.setText(download.getState().toString());
         speed.setText(UIUtils.getBytesInHuman(download.getDownloadSpeed()) + "/s");
         size.setText(UIUtils.getBytesInHuman(download.getSize()));
 
@@ -468,7 +468,7 @@ public class TransferListAdapter extends BaseExpandableListAdapter {
         peers.setText("");
         title.setText(upload.getDisplayName());
         progress.setProgress(upload.getProgress());
-        status.setText(getStatusFromResId(upload.getStatus()));
+        status.setText(upload.getState().toString());
         speed.setText(UIUtils.getBytesInHuman(upload.getUploadSpeed()) + "/s");
         size.setText(UIUtils.getBytesInHuman(upload.getSize()));
 
@@ -490,7 +490,7 @@ public class TransferListAdapter extends BaseExpandableListAdapter {
         peers.setText("");
         title.setText(download.getDisplayName());
         progress.setProgress(download.getProgress());
-        status.setText(getStatusFromResId(download.getStatus()));
+        status.setText(download.getState().toString());
         speed.setText(UIUtils.getBytesInHuman(download.getDownloadSpeed()) + "/s");
         size.setText(UIUtils.getBytesInHuman(download.getSize()));
 
@@ -529,7 +529,7 @@ public class TransferListAdapter extends BaseExpandableListAdapter {
         peers.setText("");
         title.setText(download.getDisplayName());
         progress.setProgress(download.getProgress());
-        status.setText(getStatusFromResId(download.getStatus()));
+        status.setText(download.getState().toString());
         speed.setText(UIUtils.getBytesInHuman(download.getDownloadSpeed()) + "/s");
         size.setText(UIUtils.getBytesInHuman(download.getSize()));
 
@@ -551,7 +551,7 @@ public class TransferListAdapter extends BaseExpandableListAdapter {
         peers.setText("");
         title.setText(download.getDisplayName());
         progress.setProgress(download.getProgress());
-        status.setText(getStatusFromResId(download.getStatus()));
+        status.setText(download.getState().toString());
         speed.setText(UIUtils.getBytesInHuman(download.getDownloadSpeed()) + "/s");
         size.setText(UIUtils.getBytesInHuman(download.getSize()));
 
@@ -629,7 +629,7 @@ public class TransferListAdapter extends BaseExpandableListAdapter {
             } else {
                 trackDialog(UIUtils.showYesNoDialog(context, R.string.yes_no_cancel_transfer_question, R.string.cancel_transfer, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        transfer.cancel();
+                        transfer.remove();
                         UXStats.instance().log(UXAction.DOWNLOAD_REMOVE);
                     }
                 }));

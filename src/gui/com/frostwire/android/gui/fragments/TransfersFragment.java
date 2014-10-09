@@ -57,7 +57,6 @@ import com.frostwire.android.gui.tasks.DownloadSoundcloudFromUrlTask;
 import com.frostwire.android.gui.transfers.BittorrentDownload;
 import com.frostwire.android.gui.transfers.HttpDownload;
 import com.frostwire.android.gui.transfers.SoundcloudDownload;
-import com.frostwire.android.gui.transfers.Transfer;
 import com.frostwire.android.gui.transfers.TransferManager;
 import com.frostwire.android.gui.transfers.YouTubeDownload;
 import com.frostwire.android.gui.util.SystemUtils;
@@ -73,6 +72,7 @@ import com.frostwire.android.gui.views.TimerObserver;
 import com.frostwire.android.gui.views.TimerService;
 import com.frostwire.android.gui.views.TimerSubscription;
 import com.frostwire.logging.Logger;
+import com.frostwire.transfers.Transfer;
 import com.frostwire.util.Ref;
 import com.frostwire.util.StringUtils;
 
@@ -561,7 +561,7 @@ public class TransfersFragment extends AbstractFragment implements TimerObserver
     private static final class TransferComparator implements Comparator<Transfer> {
         public int compare(Transfer lhs, Transfer rhs) {
             try {
-                return -lhs.getDateCreated().compareTo(rhs.getDateCreated());
+                return -lhs.getCreated().compareTo(rhs.getCreated());
             } catch (Throwable e) {
                 // ignore, not really super important
             }

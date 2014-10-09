@@ -18,6 +18,7 @@
 
 package com.frostwire.android.gui.transfers;
 
+import java.io.File;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -25,6 +26,7 @@ import java.util.List;
 import com.frostwire.android.R;
 import com.frostwire.android.core.FileDescriptor;
 import com.frostwire.transfers.TransferItem;
+import com.frostwire.transfers.TransferState;
 
 /**
  * @author gubatron
@@ -33,9 +35,9 @@ import com.frostwire.transfers.TransferItem;
  */
 public class PeerHttpUpload implements UploadTransfer {
 
-    private static final int STATUS_UPLOADING = 1;
-    private static final int STATUS_COMPLETE = 2;
-    private static final int STATUS_CANCELLED = 3;
+    private static final TransferState STATUS_UPLOADING = TransferState.UPLOADING;
+    private static final TransferState STATUS_COMPLETE = TransferState.COMPLETE;
+    private static final TransferState STATUS_CANCELLED = TransferState.CANCELED;
 
     private static final int SPEED_AVERAGE_CALCULATION_INTERVAL_MILLISECONDS = 1000;
 
@@ -43,7 +45,7 @@ public class PeerHttpUpload implements UploadTransfer {
     private final FileDescriptor fd;
     private final Date dateCreated;
 
-    private int status;
+    private TransferState status;
     public long bytesSent;
     public long averageSpeed; // in bytes
 
@@ -63,12 +65,17 @@ public class PeerHttpUpload implements UploadTransfer {
         return fd;
     }
 
+    @Override
+    public String getName() {
+        return fd.title;
+    }
+
     public String getDisplayName() {
         return fd.title;
     }
 
-    public String getStatus() {
-        return getStatusString(status);
+    public TransferState getState() {
+        return status;
     }
 
     public int getProgress() {
@@ -79,7 +86,7 @@ public class PeerHttpUpload implements UploadTransfer {
         return fd.fileSize;
     }
 
-    public Date getDateCreated() {
+    public Date getCreated() {
         return dateCreated;
     }
 
@@ -116,7 +123,7 @@ public class PeerHttpUpload implements UploadTransfer {
         return Collections.emptyList();
     }
 
-    public void cancel() {
+    public void remove() {
         if (status != STATUS_COMPLETE) {
             status = STATUS_CANCELLED;
         }
@@ -130,30 +137,11 @@ public class PeerHttpUpload implements UploadTransfer {
 
     public void complete() {
         status = STATUS_COMPLETE;
-        cancel();
+        remove();
     }
 
     public boolean isCanceled() {
         return status == STATUS_CANCELLED;
-    }
-
-    private String getStatusString(int status) {
-        int resId;
-        switch (status) {
-        case STATUS_UPLOADING:
-            resId = (getUploadSpeed() < 102400) ? R.string.peer_http_upload_status_streaming : R.string.peer_http_upload_status_uploading;
-            break;
-        case STATUS_COMPLETE:
-            resId = R.string.peer_http_upload_status_complete;
-            break;
-        case STATUS_CANCELLED:
-            resId = R.string.peer_http_upload_status_cancelled;
-            break;
-        default:
-            resId = R.string.peer_http_upload_status_unknown;
-            break;
-        }
-        return String.valueOf(resId);
     }
 
     private void updateAverageUploadSpeed() {
@@ -166,8 +154,12 @@ public class PeerHttpUpload implements UploadTransfer {
         }
     }
     
-    @Override
     public String getDetailsUrl() {
+        return null;
+    }
+
+    @Override
+    public File getSavePath() {
         return null;
     }
 }
