@@ -20,7 +20,6 @@ package com.frostwire.android.gui.transfers;
 
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
-import com.frostwire.android.R;
 import com.frostwire.android.core.ConfigurationManager;
 import com.frostwire.android.core.Constants;
 import com.frostwire.android.core.FileDescriptor;
@@ -51,6 +50,7 @@ import com.frostwire.uxstats.UXStats;
 import com.frostwire.vuze.*;
 import com.frostwire.vuze.VuzeManager.LoadTorrentsListener;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
@@ -358,45 +358,60 @@ public final class TransferManager implements VuzeKeys {
         }
     }
 
-    public BittorrentDownload downloadTorrent(String uri) {
+    public void downloadTorrent(String uri) {
         try {
             URI u = URI.create(uri);
 
             BittorrentDownload download = null;
 
             if (u.getScheme().equalsIgnoreCase("file")) {
-                download = new AzureusBittorrentDownload(this, createVDM(u.getPath(), null));
+                BTEngine.getInstance().download(new File(u.getPath()), null);
             } else if (u.getScheme().equalsIgnoreCase("http") || u.getScheme().equalsIgnoreCase("magnet")) {
-                download = new TorrentFetcherDownload(this, new TorrentUrlInfo(uri.toString()));
-            } else {
-                download = new InvalidBittorrentDownload(R.string.torrent_scheme_download_not_supported);
-            }
-            if (!(download instanceof InvalidBittorrentDownload)) {
-                if ((download instanceof AzureusBittorrentDownload && !alreadyDownloadingByInfoHash(download.getInfoHash())) ||
-                        (download instanceof TorrentFetcherDownload && !alreadyDownloading(uri.toString()))) {
-                    if (!bittorrentDownloads.contains(download)) {
-                        bittorrentDownloads.add(download);
-
-                        if (isBittorrentDownloadAndMobileDataSavingsOn(download)) {
-                            //give it time to get to a pausable state.
-                            try {
-                                Thread.sleep(5000);
-                            } catch (Throwable t) { /*meh*/ }
-                            enqueueTorrentTransfer(download);
-                            //give it time to stop before onPostExecute
-                            try {
-                                Thread.sleep(5000);
-                            } catch (Throwable t) { /*meh*/ }
-                        }
-                    }
+                BittorrentDownload dl = new TorrentFetcherDownload(this, new TorrentUrlInfo(uri.toString()));
+                if (dl != null) {
+                    bittorrentDownloads.add(dl);
                 }
+            } else {
+                //download = new InvalidBittorrentDownload(R.string.torrent_scheme_download_not_supported);
             }
-
-            return download;
+            // TODO:BITTORRENT
+//            if (!(download instanceof InvalidBittorrentDownload)) {
+//                if ((download instanceof AzureusBittorrentDownload && !alreadyDownloadingByInfoHash(download.getInfoHash())) ||
+//                        (download instanceof TorrentFetcherDownload && !alreadyDownloading(uri.toString()))) {
+//                    if (!bittorrentDownloads.contains(download)) {
+//                        bittorrentDownloads.add(download);
+//
+//                        if (isBittorrentDownloadAndMobileDataSavingsOn(download)) {
+//                            //give it time to get to a pausable state.
+//                            try {
+//                                Thread.sleep(5000);
+//                            } catch (Throwable t) { /*meh*/ }
+//                            enqueueTorrentTransfer(download);
+//                            //give it time to stop before onPostExecute
+//                            try {
+//                                Thread.sleep(5000);
+//                            } catch (Throwable t) { /*meh*/ }
+//                        }
+//                    }
+//                }
+//            }
         } catch (Throwable e) {
             LOG.warn("Error creating download from uri: " + uri);
-            return new InvalidBittorrentDownload(R.string.empty_string);
         }
+    }
+
+    private static BittorrentDownload createBittorrentDownload(TransferManager manager, TorrentSearchResultInfo info) {
+        BTEngine engine = BTEngine.getInstance();
+
+        TorrentHandle th = engine.getSession().findTorrent(new Sha1Hash(info.getInfoHash()));
+
+        if (th == null) { // new download, I need to download the torrent
+            return new TorrentFetcherDownload(manager, info);
+        } else {
+            engine.download(th.getTorrentInfo(), null, info.getSelection());
+        }
+
+        return null;
     }
 
     private static BittorrentDownload createBittorrentDownload(TransferManager manager, TorrentSearchResult sr) {
@@ -404,18 +419,7 @@ public final class TransferManager implements VuzeKeys {
         if (StringUtils.isNullOrEmpty(sr.getHash())) {
             return new TorrentFetcherDownload(manager, info);
         } else {
-
-            BTEngine engine = BTEngine.getInstance();
-
-            TorrentHandle th = engine.getSession().findTorrent(new Sha1Hash(sr.getHash()));
-
-            if (th == null) { // new download, I need to download the torrent
-                return new TorrentFetcherDownload(manager, info);
-            } else {
-                engine.download(th.getTorrentInfo(), null, info.getSelection());
-            }
-
-            return null;
+            return createBittorrentDownload(manager, info);
         }
     }
 

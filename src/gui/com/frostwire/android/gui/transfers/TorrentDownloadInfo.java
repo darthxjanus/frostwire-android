@@ -33,7 +33,7 @@ interface TorrentDownloadInfo {
 
     public long getSize();
 
-    public String getHash();
+    public String getInfoHash();
 
     public boolean[] getSelection();
 }

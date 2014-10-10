@@ -128,7 +128,7 @@ public class TorrentFetcherDownload implements BittorrentDownload {
 
     @Override
     public String getInfoHash() {
-        return info.getHash();
+        return info.getInfoHash();
     }
 
     @Override
@@ -279,7 +279,7 @@ public class TorrentFetcherDownload implements BittorrentDownload {
         boolean[] selection = info.getSelection();
 
         TorrentInfo ti = TorrentInfo.bdecode(data);
-        
+
         try {
             BTEngine.getInstance().download(ti, null, selection);
         } finally {

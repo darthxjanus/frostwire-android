@@ -54,7 +54,7 @@ class TorrentUrlInfo implements TorrentDownloadInfo {
     }
 
     @Override
-    public String getHash() {
+    public String getInfoHash() {
         return null;
     }
 
