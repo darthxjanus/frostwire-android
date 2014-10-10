@@ -25,6 +25,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
+import com.frostwire.transfers.BittorrentDownload;
 import com.frostwire.transfers.TransferItem;
 import com.frostwire.transfers.TransferState;
 import com.frostwire.util.ByteUtils;
@@ -116,6 +117,21 @@ public final class AzureusBittorrentDownload implements BittorrentDownload {
         return downloadManager.isSeeding();
     }
 
+    @Override
+    public boolean isPaused() {
+        return false;
+    }
+
+    @Override
+    public boolean isFinished() {
+        return false;
+    }
+
+    @Override
+    public boolean isUploading() {
+        return false;
+    }
+
     public List<TransferItem> getItems() {
         if (items.size() == 1) {
             return Collections.emptyList();
@@ -169,24 +185,26 @@ public final class AzureusBittorrentDownload implements BittorrentDownload {
         return downloadManager.getCreationDate();
     }
 
-    public String getPeers() {
-        return VuzeFormatter.formatPeers(downloadManager.getPeers(), downloadManager.getConnectedPeers(), downloadManager.hasStarted(), downloadManager.hasScrape());
+    public int getConnectedPeers() {
+        return  0;
     }
 
-    public String getSeeds() {
-        return VuzeFormatter.formatSeeds(downloadManager.getSeeds(), downloadManager.getConnectedSeeds(), downloadManager.hasStarted(), downloadManager.hasScrape());
+    public int getConnectedSeeds() {
+        return 0;
     }
 
-    public String getHash() {
+    @Override
+    public int getTotalPeers() {
+        return 0;
+    }
+
+    @Override
+    public int getTotalSeeds() {
+        return 0;
+    }
+
+    public String getInfoHash() {
         return hash;
-    }
-
-    public String getSeedToPeerRatio() {
-        return VuzeFormatter.formatSeedToPeerRatio(downloadManager.getConnectedSeeds(), downloadManager.getConnectedPeers());
-    }
-
-    public String getShareRatio() {
-        return VuzeFormatter.formatShareRatio(downloadManager.getShareRatio());
     }
 
     @Override
@@ -223,6 +241,6 @@ public final class AzureusBittorrentDownload implements BittorrentDownload {
             return false;
         }
 
-        return getHash().equals(((BittorrentDownload) o).getHash());
+        return getInfoHash().equals(((BittorrentDownload) o).getInfoHash());
     }
 }

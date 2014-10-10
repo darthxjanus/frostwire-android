@@ -18,6 +18,7 @@
 
 package com.frostwire.android.gui.transfers;
 
+import com.frostwire.transfers.BittorrentDownload;
 import com.frostwire.transfers.TransferItem;
 import com.frostwire.transfers.TransferState;
 
@@ -107,42 +108,37 @@ final class InvalidBittorrentDownload implements BittorrentDownload, InvalidTran
     }
 
     @Override
-    public String getHash() {
-        return null;
-    }
-
-    @Override
-    public String getPeers() {
-        return null;
-    }
-
-    @Override
-    public String getSeeds() {
-        return null;
-    }
-
-    @Override
-    public String getSeedToPeerRatio() {
-        return null;
-    }
-
-    @Override
-    public String getShareRatio() {
-        return null;
-    }
-
-    @Override
-    public boolean isResumable() {
-        return false;
-    }
-
-    @Override
-    public boolean isPausable() {
-        return false;
-    }
-
-    @Override
     public boolean isDownloading() {
+        return false;
+    }
+
+    @Override
+    public String getInfoHash() {
+        return null;
+    }
+
+    @Override
+    public int getConnectedPeers() {
+        return 0;
+    }
+
+    @Override
+    public int getTotalPeers() {
+        return 0;
+    }
+
+    @Override
+    public int getConnectedSeeds() {
+        return 0;
+    }
+
+    @Override
+    public int getTotalSeeds() {
+        return 0;
+    }
+
+    @Override
+    public boolean isPaused() {
         return false;
     }
 
@@ -152,11 +148,12 @@ final class InvalidBittorrentDownload implements BittorrentDownload, InvalidTran
     }
 
     @Override
-    public void pause() {
+    public boolean isFinished() {
+        return false;
     }
-    
+
     @Override
-    public void enqueue() {
+    public void pause() {
     }
 
     @Override
@@ -175,5 +172,10 @@ final class InvalidBittorrentDownload implements BittorrentDownload, InvalidTran
     @Override
     public String getName() {
         return null;
+    }
+
+    @Override
+    public boolean isUploading() {
+        return false;
     }
 }

@@ -20,7 +20,6 @@ package com.frostwire.android.gui.tasks;
 
 import android.content.Context;
 import com.frostwire.android.R;
-import com.frostwire.android.gui.transfers.BittorrentDownload;
 import com.frostwire.android.gui.transfers.ExistingDownload;
 import com.frostwire.android.gui.transfers.InvalidTransfer;
 import com.frostwire.android.gui.transfers.TransferManager;
