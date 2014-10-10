@@ -18,10 +18,16 @@ import java.util.List;
  */
 public final class UIBittorrentDownload implements BittorrentDownload {
 
+    private final TransferManager manager;
     private final BTDownload dl;
 
-    public UIBittorrentDownload(BTDownload dl) {
+    private TransferState state;
+
+    public UIBittorrentDownload(TransferManager manager, BTDownload dl) {
+        this.manager = manager;
         this.dl = dl;
+
+        this.state = dl.getState();
 
         // TODO:BITTORRENT
         // review the logic of under what conditions we can actually start with resume
@@ -120,7 +126,11 @@ public final class UIBittorrentDownload implements BittorrentDownload {
 
     @Override
     public TransferState getState() {
-        return dl.getState();
+        if (state != TransferState.ERROR) {
+            state = dl.getState();
+        }
+
+        return state;
     }
 
     @Override
@@ -165,7 +175,12 @@ public final class UIBittorrentDownload implements BittorrentDownload {
 
     @Override
     public void remove() {
-        dl.remove();
+        try {
+            dl.remove();
+            manager.remove(this);
+        } catch (Throwable e) {
+            state = TransferState.ERROR;
+        }
     }
 
     @Override

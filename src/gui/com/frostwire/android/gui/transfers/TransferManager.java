@@ -333,7 +333,7 @@ public final class TransferManager implements VuzeKeys {
                     return;
                 }
 
-                bittorrentDownloads.add(new UIBittorrentDownload(dl));
+                bittorrentDownloads.add(new UIBittorrentDownload(TransferManager.this, dl));
             }
         });
 
