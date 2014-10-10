@@ -142,34 +142,35 @@ public final class TransferManager implements VuzeKeys {
     }
 
     
-    public DownloadTransfer download(SearchResult sr) {
-        DownloadTransfer transfer = new InvalidDownload();
+    public TransferResult download(SearchResult sr) {
+        TransferResult r = TransferResult.ERROR;
         
         if (alreadyDownloading(sr.getDetailsUrl())) {
-            transfer = new ExistingDownload();
+            r = TransferResult.DUPLICATED;
         }
 
         if (sr instanceof TorrentSearchResult) {
-            transfer = newBittorrentDownload((TorrentSearchResult) sr);
+            r = newBittorrentDownload((TorrentSearchResult) sr);
         } else if (sr instanceof HttpSlideSearchResult) {
-            transfer = newHttpDownload((HttpSlideSearchResult) sr);
+            r = newHttpDownload((HttpSlideSearchResult) sr);
         } else if (sr instanceof YouTubeCrawledSearchResult) {
-            transfer = newYouTubeDownload((YouTubeCrawledSearchResult) sr);
+            r = newYouTubeDownload((YouTubeCrawledSearchResult) sr);
         } else if (sr instanceof SoundcloudSearchResult) {
-            transfer = newSoundcloudDownload((SoundcloudSearchResult) sr);
+            r = newSoundcloudDownload((SoundcloudSearchResult) sr);
         } else if (sr instanceof HttpSearchResult) {
-            transfer = newHttpDownload((HttpSearchResult) sr);
+            r = newHttpDownload((HttpSearchResult) sr);
         }
+
+        // TODO:BITTORRENT
+//        if (isBittorrentDownloadAndMobileDataSavingsOn(transfer)) {
+//            //give it time to get to a pausable state.
+//            try { Thread.sleep(5000);  } catch (Throwable t) { /*meh*/ }
+//            enqueueTorrentTransfer(transfer);
+//            //give it time to stop before onPostExecute
+//            try { Thread.sleep(5000);  } catch (Throwable t) { /*meh*/ }
+//        }
         
-        if (isBittorrentDownloadAndMobileDataSavingsOn(transfer)) {
-            //give it time to get to a pausable state.
-            try { Thread.sleep(5000);  } catch (Throwable t) { /*meh*/ }
-            enqueueTorrentTransfer(transfer);
-            //give it time to stop before onPostExecute
-            try { Thread.sleep(5000);  } catch (Throwable t) { /*meh*/ }
-        }
-        
-        return transfer;
+        return r;
     }
     
     private void enqueueTorrentTransfer(DownloadTransfer transfer) {
@@ -397,7 +398,7 @@ public final class TransferManager implements VuzeKeys {
         }
     }
 
-    private BittorrentDownload newBittorrentDownload(TorrentSearchResult sr) {
+    private TransferResult newBittorrentDownload(TorrentSearchResult sr) {
         try {
             BittorrentDownload dl = createBittorrentDownload(this, sr);
 
@@ -405,47 +406,47 @@ public final class TransferManager implements VuzeKeys {
                 bittorrentDownloads.add(dl);
             }
 
-            return dl;
+            return TransferResult.SUCCESS;
         } catch (Throwable e) {
             LOG.warn("Error creating download from search result: " + sr);
-            return new InvalidBittorrentDownload(R.string.empty_string);
+            return TransferResult.ERROR;
         }
     }
 
-    private HttpDownload newHttpDownload(HttpSlideSearchResult sr) {
+    private TransferResult newHttpDownload(HttpSlideSearchResult sr) {
         HttpDownload download = new HttpDownload(this, sr.getDownloadLink());
 
         downloads.add(download);
         download.start();
 
-        return download;
+        return TransferResult.SUCCESS;
     }
 
-    private DownloadTransfer newYouTubeDownload(YouTubeCrawledSearchResult sr) {
+    private TransferResult newYouTubeDownload(YouTubeCrawledSearchResult sr) {
         YouTubeDownload download = new YouTubeDownload(this, sr);
 
         downloads.add(download);
         download.start();
 
-        return download;
+        return TransferResult.SUCCESS;
     }
 
-    private DownloadTransfer newSoundcloudDownload(SoundcloudSearchResult sr) {
+    private TransferResult newSoundcloudDownload(SoundcloudSearchResult sr) {
         SoundcloudDownload download = new SoundcloudDownload(this, sr);
 
         downloads.add(download);
         download.start();
 
-        return download;
+        return TransferResult.SUCCESS;
     }
 
-    private DownloadTransfer newHttpDownload(HttpSearchResult sr) {
+    private TransferResult newHttpDownload(HttpSearchResult sr) {
         HttpDownload download = new HttpDownload(this, new HttpSearchResultDownloadLink(sr));
 
         downloads.add(download);
         download.start();
 
-        return download;
+        return TransferResult.SUCCESS;
     }
     
     private boolean isBittorrentDownload(DownloadTransfer transfer) {
@@ -561,5 +562,11 @@ public final class TransferManager implements VuzeKeys {
                 dm.stop();
             }
         }
+    }
+
+    public enum TransferResult {
+        SUCCESS,
+        DUPLICATED,
+        ERROR
     }
 }

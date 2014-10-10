@@ -19,10 +19,8 @@
 package com.frostwire.android.gui.tasks;
 
 import android.content.Context;
-
 import com.frostwire.android.R;
 import com.frostwire.android.gui.transfers.BittorrentDownload;
-import com.frostwire.android.gui.transfers.DownloadTransfer;
 import com.frostwire.android.gui.transfers.ExistingDownload;
 import com.frostwire.android.gui.transfers.InvalidTransfer;
 import com.frostwire.android.gui.transfers.TransferManager;
@@ -32,12 +30,10 @@ import com.frostwire.logging.Logger;
 import com.frostwire.search.SearchResult;
 
 /**
- * 
  * @author gubatron
  * @author aldenml
- * 
  */
-public class StartDownloadTask extends ContextTask<DownloadTransfer> {
+public class StartDownloadTask extends ContextTask<TransferManager.TransferResult> {
 
     private static final Logger LOG = Logger.getLogger(StartDownloadTask.class);
 
@@ -49,51 +45,55 @@ public class StartDownloadTask extends ContextTask<DownloadTransfer> {
         this.sr = sr;
         this.message = message;
     }
-    
-    public StartDownloadTask(Context ctx, SearchResult sr){
-        this(ctx,sr,null);
+
+    public StartDownloadTask(Context ctx, SearchResult sr) {
+        this(ctx, sr, null);
     }
 
     @Override
-    protected DownloadTransfer doInBackground() {
-        DownloadTransfer transfer = null;
+    protected TransferManager.TransferResult doInBackground() {
+        TransferManager.TransferResult r;
         try {
-            transfer = TransferManager.instance().download(sr);
+            r = TransferManager.instance().download(sr);
         } catch (Throwable e) {
             LOG.warn("Error adding new download from result: " + sr, e);
+            r = TransferManager.TransferResult.ERROR;
         }
-        return transfer;
+        return r;
     }
 
     @Override
-    protected void onPostExecute(Context ctx, DownloadTransfer transfer) {
-        if (transfer != null) {
-            if (!(transfer instanceof InvalidTransfer)) {
-                TransferManager tm = TransferManager.instance();
-                if (tm.isBittorrentDownloadAndMobileDataSavingsOn(transfer)) {
-                    UIUtils.showLongMessage(ctx, R.string.torrent_transfer_enqueued_on_mobile_data);
-                } else {
-                    if (tm.isBittorrentDownloadAndMobileDataSavingsOff(transfer)) {
-                        UIUtils.showLongMessage(ctx, R.string.torrent_transfer_consuming_mobile_data);
-                    }
-                    
-                    if (message != null){
-                        UIUtils.showShortMessage(ctx, message);
-                    }
-                }
-                
-                if (tm.isBittorrentDisconnected() && transfer instanceof BittorrentDownload) {
-                    asyncPauseTorrents();
-                    UIUtils.showLongMessage(ctx, R.string.torrent_transfer_paused_disconnected_from_bittorrent);
-                }
-            } else {
-                if (transfer instanceof ExistingDownload) {
-                    //nothing happens here, the user should just see the transfer
-                    //manager and we avoid adding the same transfer twice.
-                } else {
-                    UIUtils.showShortMessage(ctx, ((InvalidTransfer) transfer).getReasonResId());
-                }
+    protected void onPostExecute(Context ctx, TransferManager.TransferResult r) {
+        if (r != TransferManager.TransferResult.ERROR) {
+            if (message != null) {
+                UIUtils.showShortMessage(ctx, message);
             }
+
+            // TODO:BITTORRENT
+            /*
+            TransferManager tm = TransferManager.instance();
+            if (tm.isBittorrentDownloadAndMobileDataSavingsOn(transfer)) {
+                UIUtils.showLongMessage(ctx, R.string.torrent_transfer_enqueued_on_mobile_data);
+            } else {
+                if (tm.isBittorrentDownloadAndMobileDataSavingsOff(transfer)) {
+                    UIUtils.showLongMessage(ctx, R.string.torrent_transfer_consuming_mobile_data);
+                }
+
+
+            }
+            if (tm.isBittorrentDisconnected() && transfer instanceof BittorrentDownload) {
+                asyncPauseTorrents();
+                UIUtils.showLongMessage(ctx, R.string.torrent_transfer_paused_disconnected_from_bittorrent);
+            }*/
+        } else {
+            // TODO:BITTORRENT
+            /*if (transfer instanceof ExistingDownload) {
+                //nothing happens here, the user should just see the transfer
+                //manager and we avoid adding the same transfer twice.
+            } else {
+                UIUtils.showShortMessage(ctx, ((InvalidTransfer) transfer).getReasonResId());
+            }*/
+            UIUtils.showShortMessage(ctx, "Error starting download");
         }
     }
 
@@ -109,7 +109,9 @@ public class StartDownloadTask extends ContextTask<DownloadTransfer> {
                     TransferManager.instance().pauseTorrents();
                 } catch (Throwable e) {
                 }
-            };
+            }
+
+            ;
         }.start();
     }
 }
