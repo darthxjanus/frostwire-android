@@ -36,6 +36,7 @@ import com.frostwire.android.gui.services.Engine;
 import com.frostwire.android.gui.util.SystemUtils;
 import com.frostwire.android.util.HttpResponseCache;
 import com.frostwire.android.util.ImageLoader;
+import com.frostwire.jlibtorrent.LibTorrent;
 import com.frostwire.logging.Logger;
 import com.frostwire.search.CrawlPagedWebSearchPerformer;
 import com.frostwire.util.DirectoryUtils;
@@ -82,6 +83,8 @@ public class MainApplication extends Application {
             Map<String, String> messages = getVuzeMessages(this);
             VuzeConfiguration conf = new VuzeConfiguration(azureusPath, torrentsPath, messages);
             VuzeManager.setConfiguration(conf);
+
+            setupBTEngine();
 
             NetworkManager.create(this);
             Librarian.create(this);
@@ -158,5 +161,11 @@ public class MainApplication extends Application {
         } catch (Throwable ex) {
             // Ignore
         }
+    }
+
+    private void setupBTEngine() {
+        System.out.println("============================");
+        System.out.println("LibTorrent: " + LibTorrent.version());
+        System.out.println("============================");
     }
 }
