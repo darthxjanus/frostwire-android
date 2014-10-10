@@ -108,6 +108,11 @@ final class InvalidBittorrentDownload implements BittorrentDownload, InvalidTran
     }
 
     @Override
+    public void remove(boolean deleteTorrent, boolean deleteData) {
+
+    }
+
+    @Override
     public boolean isDownloading() {
         return false;
     }

@@ -181,6 +181,11 @@ public class TorrentFetcherDownload implements BittorrentDownload {
     }
 
     @Override
+    public void remove(boolean deleteTorrent, boolean deleteData) {
+
+    }
+
+    @Override
     public void remove(boolean deleteData) {
         statusResId = TransferState.CANCELED;
 

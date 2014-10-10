@@ -218,6 +218,11 @@ public final class AzureusBittorrentDownload implements BittorrentDownload {
         VuzeUtils.removeDownload(downloadManager, deleteData, deleteData);
     }
 
+    @Override
+    public void remove(boolean deleteTorrent, boolean deleteData) {
+
+    }
+
     VuzeDownloadManager getDownloadManager() {
         return downloadManager;
     }
