@@ -47,6 +47,7 @@ import com.frostwire.search.torrent.TorrentSearchResult;
 import com.frostwire.search.youtube.YouTubeCrawledSearchResult;
 import com.frostwire.transfers.DownloadTransfer;
 import com.frostwire.transfers.Transfer;
+import com.frostwire.transfers.UploadTransfer;
 import com.frostwire.util.ByteUtils;
 import com.frostwire.util.StringUtils;
 import com.frostwire.uxstats.UXAction;
