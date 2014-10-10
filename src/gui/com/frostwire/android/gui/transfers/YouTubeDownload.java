@@ -25,6 +25,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import com.frostwire.transfers.DownloadTransfer;
 import com.frostwire.transfers.TransferItem;
 import com.frostwire.transfers.TransferState;
 import org.apache.commons.io.FilenameUtils;

@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import com.frostwire.transfers.DownloadTransfer;
 import com.frostwire.transfers.Transfer;
 import com.frostwire.transfers.TransferItem;
 import org.apache.commons.io.FilenameUtils;
@@ -52,7 +53,6 @@ import com.frostwire.android.gui.adapters.menu.OpenMenuAction;
 import com.frostwire.android.gui.adapters.menu.PauseDownloadMenuAction;
 import com.frostwire.android.gui.adapters.menu.ResumeDownloadMenuAction;
 import com.frostwire.android.gui.transfers.BittorrentDownload;
-import com.frostwire.android.gui.transfers.DownloadTransfer;
 import com.frostwire.android.gui.transfers.HttpDownload;
 import com.frostwire.android.gui.transfers.PeerHttpDownload;
 import com.frostwire.android.gui.transfers.PeerHttpUpload;

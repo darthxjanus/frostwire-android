@@ -23,6 +23,7 @@ import java.util.Date;
 import java.util.List;
 
 import com.frostwire.android.R;
+import com.frostwire.transfers.DownloadTransfer;
 import com.frostwire.transfers.TransferItem;
 import com.frostwire.transfers.TransferState;
 
