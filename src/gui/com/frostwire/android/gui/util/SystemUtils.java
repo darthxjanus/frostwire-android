@@ -45,7 +45,7 @@ public final class SystemUtils {
     private static final String TORRENTS_FOLDER_NAME = "Torrents";
     private static final String TORRENT_DATA_FOLDER_NAME = "TorrentsData";
     private static final String TEMP_FOLDER_NAME = "Temp";
-    private static final String AZUREUS_FOLDER_NAME = "vuze";
+    private static final String LIBTORRENT_FOLDER_NAME = "libtorrent";
 
     private static final String APPLICATION_NAME = "frostwire.apk";
 
@@ -69,8 +69,8 @@ public final class SystemUtils {
         return result;
     }
 
-    public static File getAzureusDirectory(Context context) {
-        return createFolder(context.getExternalFilesDir(null), AZUREUS_FOLDER_NAME);
+    public static File getLibTorrentDirectory(Context context) {
+        return createFolder(context.getExternalFilesDir(null), LIBTORRENT_FOLDER_NAME);
     }
 
     public static File getTorrentsDirectory() {

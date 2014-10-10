@@ -41,6 +41,7 @@ import com.frostwire.android.gui.PeerManager;
 import com.frostwire.android.gui.activities.MainActivity;
 import com.frostwire.android.gui.transfers.TransferManager;
 import com.frostwire.android.util.concurrent.ThreadPool;
+import com.frostwire.bittorrent.BTEngine;
 import com.frostwire.vuze.VuzeManager;
 
 /**
@@ -149,6 +150,7 @@ public class EngineService extends Service implements IEngineService {
         //TransferManager.instance().loadTorrents();
 
         VuzeManager.getInstance().resume();
+        BTEngine.getInstance().start();
 
         PeerManager.instance().clear();
 
@@ -168,6 +170,7 @@ public class EngineService extends Service implements IEngineService {
         state = STATE_STOPPING;
 
         VuzeManager.getInstance().pause(disconnected);
+        BTEngine.getInstance().stop();
 
         PeerManager.instance().clear();
 

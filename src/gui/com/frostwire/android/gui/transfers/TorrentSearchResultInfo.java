@@ -24,7 +24,6 @@ import com.frostwire.search.torrent.TorrentSearchResult;
 /**
  * @author gubatron
  * @author aldenml
- * 
  */
 class TorrentSearchResultInfo implements TorrentDownloadInfo {
 
@@ -35,7 +34,7 @@ class TorrentSearchResultInfo implements TorrentDownloadInfo {
     }
 
     @Override
-    public String getTorrentUrl() {
+    public String getTorrentUri() {
         return sr.getTorrentUrl();
     }
 
@@ -60,9 +59,13 @@ class TorrentSearchResultInfo implements TorrentDownloadInfo {
     }
 
     @Override
-    public String getRelativePath() {
+    public boolean[] getSelection() {
         if (sr instanceof TorrentCrawledSearchResult) {
-            return ((TorrentCrawledSearchResult) sr).getFilePath();
+            TorrentCrawledSearchResult csr = (TorrentCrawledSearchResult) sr;
+            int numFiles = csr.getTorrentInfo().getNumFiles();
+            boolean[] selection = new boolean[numFiles];
+            selection[csr.getFileIndex()] = true;
+            return selection;
         } else {
             return null;
         }

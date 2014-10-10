@@ -19,11 +19,11 @@
 package com.frostwire.android.gui.transfers;
 
 import org.apache.commons.io.FilenameUtils;
+import org.gudy.azureus2.core3.util.UrlUtils;
 
 /**
  * @author gubatron
  * @author aldenml
- * 
  */
 class TorrentUrlInfo implements TorrentDownloadInfo {
 
@@ -34,7 +34,7 @@ class TorrentUrlInfo implements TorrentDownloadInfo {
     }
 
     @Override
-    public String getTorrentUrl() {
+    public String getTorrentUri() {
         return url;
     }
 
@@ -59,7 +59,24 @@ class TorrentUrlInfo implements TorrentDownloadInfo {
     }
 
     @Override
-    public String getRelativePath() {
+    public boolean[] getSelection() {
         return null;
+    }
+
+    private String getDownloadNameFromMagnetURI(String uri) {
+        if (!uri.startsWith("magnet:")) {
+            return uri;
+        }
+
+        if (uri.contains("dn=")) {
+            String[] split = uri.split("&");
+            for (String s : split) {
+                if (s.toLowerCase().startsWith("dn=") && s.length() > 3) {
+                    return UrlUtils.decode(s.split("=")[1]);
+                }
+            }
+        }
+
+        return FilenameUtils.getName(url);
     }
 }

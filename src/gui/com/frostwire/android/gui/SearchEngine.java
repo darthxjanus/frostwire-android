@@ -182,13 +182,7 @@ public abstract class SearchEngine {
     public static final SearchEngine TPB = new SearchEngine("TPB", Constants.PREF_KEY_SEARCH_USE_TPB) {
         @Override
         public SearchPerformer getPerformer(long token, String keywords) {
-            TPBSearchPerformer performer = null;
-            if (NetworkManager.instance().isDataWIFIUp()) {
-                performer = new TPBSearchPerformer(new DomainAliasManager("thepiratebay.se"), token, keywords, DEFAULT_TIMEOUT);
-            } else {
-                LOG.info("No TPBSearchPerformer, WiFi not up");
-            }
-            return performer;
+            return new TPBSearchPerformer(new DomainAliasManager("thepiratebay.se"), token, keywords, DEFAULT_TIMEOUT);
         }
     };
     

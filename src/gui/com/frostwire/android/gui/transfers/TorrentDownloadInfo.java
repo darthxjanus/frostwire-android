@@ -25,7 +25,7 @@ package com.frostwire.android.gui.transfers;
  */
 interface TorrentDownloadInfo {
 
-    public String getTorrentUrl();
+    public String getTorrentUri();
 
     public String getDetailsUrl();
 
@@ -35,5 +35,5 @@ interface TorrentDownloadInfo {
 
     public String getHash();
 
-    public String getRelativePath();
+    public boolean[] getSelection();
 }
