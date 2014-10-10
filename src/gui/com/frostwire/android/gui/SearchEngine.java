@@ -189,13 +189,7 @@ public abstract class SearchEngine {
     public static final SearchEngine MONOVA = new SearchEngine("Monova", Constants.PREF_KEY_SEARCH_USE_MONOVA) {
         @Override
         public SearchPerformer getPerformer(long token, String keywords) {
-            MonovaSearchPerformer performer = null;
-            if (NetworkManager.instance().isDataWIFIUp()) {
-                performer = new MonovaSearchPerformer(new DomainAliasManager("www.monova.org"), token, keywords, DEFAULT_TIMEOUT);
-            } else {
-                LOG.info("No MonovaSearchPerformer, WiFi not up");
-            }
-            return performer;
+            return new MonovaSearchPerformer(new DomainAliasManager("www.monova.org"), token, keywords, DEFAULT_TIMEOUT);
         }
     };
     

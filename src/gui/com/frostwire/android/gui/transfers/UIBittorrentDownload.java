@@ -90,11 +90,6 @@ public final class UIBittorrentDownload implements BittorrentDownload {
     }
 
     @Override
-    public void remove(boolean deleteData) {
-        dl.remove(deleteData);
-    }
-
-    @Override
     public boolean isUploading() {
         return dl.isUploading();
     }
@@ -175,16 +170,21 @@ public final class UIBittorrentDownload implements BittorrentDownload {
 
     @Override
     public void remove() {
-        try {
-            dl.remove();
-            manager.remove(this);
-        } catch (Throwable e) {
-            state = TransferState.ERROR;
-        }
+        remove(false);
+    }
+
+    @Override
+    public void remove(boolean deleteData) {
+        remove(false, deleteData);
     }
 
     @Override
     public void remove(boolean deleteTorrent, boolean deleteData) {
-        dl.remove(deleteTorrent, deleteData);
+        try {
+            dl.remove(deleteTorrent, deleteData);
+            manager.remove(this);
+        } catch (Throwable e) {
+            state = TransferState.ERROR;
+        }
     }
 }
