@@ -24,7 +24,6 @@ import java.util.concurrent.ExecutorService;
 import android.app.Application;
 
 import com.frostwire.android.core.player.CoreMediaPlayer;
-import com.frostwire.android.util.concurrent.ThreadPool;
 
 /**
  * @author gubatron

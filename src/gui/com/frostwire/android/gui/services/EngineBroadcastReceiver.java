@@ -20,6 +20,7 @@ package com.frostwire.android.gui.services;
 
 import java.io.File;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -40,7 +41,6 @@ import com.frostwire.android.gui.NetworkManager;
 import com.frostwire.android.gui.UniversalScanner;
 import com.frostwire.android.gui.transfers.TransferManager;
 import com.frostwire.android.util.SystemUtils;
-import com.frostwire.android.util.concurrent.ExecutorsHelper;
 
 /**
  * Receives and controls messages from the external world. Depending on the
@@ -59,7 +59,7 @@ public class EngineBroadcastReceiver extends BroadcastReceiver {
     private boolean wasPlaying;
 
     public EngineBroadcastReceiver() {
-        engineExecutor = ExecutorsHelper.newFixedSizeThreadPool(1, "BroadcastReceiver-EngineExecutor");
+        engineExecutor = Executors.newFixedThreadPool(1);
     }
 
     @Override

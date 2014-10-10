@@ -33,7 +33,6 @@ import org.apache.commons.io.FilenameUtils;
 import android.os.SystemClock;
 import android.util.Log;
 
-import com.frostwire.android.R;
 import com.frostwire.android.core.Constants;
 import com.frostwire.android.core.FileDescriptor;
 import com.frostwire.android.core.HttpFetcher;
@@ -42,7 +41,6 @@ import com.frostwire.android.gui.Librarian;
 import com.frostwire.android.gui.Peer;
 import com.frostwire.android.gui.services.Engine;
 import com.frostwire.android.gui.util.SystemUtils;
-import com.frostwire.android.util.concurrent.AbstractRunnable;
 
 /**
  * @author gubatron

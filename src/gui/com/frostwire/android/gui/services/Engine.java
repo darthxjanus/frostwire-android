@@ -36,7 +36,6 @@ import android.telephony.TelephonyManager;
 import com.frostwire.android.core.CoreRuntimeException;
 import com.frostwire.android.core.player.CoreMediaPlayer;
 import com.frostwire.android.gui.services.EngineService.EngineServiceBinder;
-import com.frostwire.android.util.concurrent.ThreadPool;
 
 /**
  * @author gubatron
