@@ -178,7 +178,7 @@ public final class PeerHttpDownload implements DownloadTransfer {
      * @param retry
      */
     private void start(final int delay, final int retry) {
-        Engine.instance().getThreadPool().execute(new AbstractRunnable(getDisplayName()) {
+        Engine.instance().getThreadPool().execute(new Thread(getDisplayName()) {
             public void run() {
                 try {
                     status = STATUS_WAITING;

@@ -19,6 +19,7 @@
 package com.frostwire.android.gui.services;
 
 import java.io.File;
+import java.util.concurrent.ExecutorService;
 
 import android.app.Application;
 import android.content.ComponentName;
@@ -107,7 +108,8 @@ public final class Engine implements IEngineService {
         }
     }
 
-    public ThreadPool getThreadPool() {
+    @Override
+    public ExecutorService getThreadPool() {
         return service != null ? service.getThreadPool() : null;
     }
 

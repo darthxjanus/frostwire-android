@@ -19,6 +19,7 @@
 package com.frostwire.android.gui.services;
 
 import java.io.File;
+import java.util.concurrent.ExecutorService;
 
 import android.app.Application;
 
@@ -57,7 +58,7 @@ public interface IEngineService {
 
     public void stopServices(boolean disconnected);
 
-    public ThreadPool getThreadPool();
+    public ExecutorService getThreadPool();
 
     public void notifyDownloadFinished(String displayName, File file);
     

@@ -18,8 +18,6 @@
 
 package com.frostwire.android.gui.services;
 
-import java.io.File;
-
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -31,7 +29,6 @@ import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.Binder;
 import android.os.IBinder;
 import android.util.Log;
-
 import com.frostwire.android.R;
 import com.frostwire.android.core.ConfigurationManager;
 import com.frostwire.android.core.Constants;
@@ -40,14 +37,18 @@ import com.frostwire.android.gui.Librarian;
 import com.frostwire.android.gui.PeerManager;
 import com.frostwire.android.gui.activities.MainActivity;
 import com.frostwire.android.gui.transfers.TransferManager;
-import com.frostwire.android.util.concurrent.ThreadPool;
 import com.frostwire.bittorrent.BTEngine;
 import com.frostwire.vuze.VuzeManager;
+
+import java.io.File;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.SynchronousQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author gubatron
  * @author aldenml
- *
  */
 public class EngineService extends Service implements IEngineService {
 
@@ -70,7 +71,7 @@ public class EngineService extends Service implements IEngineService {
     public EngineService() {
         binder = new EngineServiceBinder();
 
-        threadPool = new ThreadPool("Engine");
+        threadPool = new ThreadPool();
 
         mediaPlayer = new ApolloMediaPlayer(this);
 
@@ -180,7 +181,8 @@ public class EngineService extends Service implements IEngineService {
         Log.v(TAG, "Engine stopped, state: " + state);
     }
 
-    public ThreadPool getThreadPool() {
+    @Override
+    public ExecutorService getThreadPool() {
         return threadPool;
     }
 
@@ -227,12 +229,30 @@ public class EngineService extends Service implements IEngineService {
         long mediumPause = 150;
         long longPause = 180;
 
-        return new long[] { 0, shortVibration, longPause, shortVibration, shortPause, shortVibration, shortPause, shortVibration, mediumPause, mediumVibration };
+        return new long[]{0, shortVibration, longPause, shortVibration, shortPause, shortVibration, shortPause, shortVibration, mediumPause, mediumVibration};
     }
 
     public class EngineServiceBinder extends Binder {
         public IEngineService getService() {
             return EngineService.this;
+        }
+    }
+
+    private static final class ThreadPool extends ThreadPoolExecutor {
+
+        public ThreadPool() {
+            super(1, Integer.MAX_VALUE, 20, TimeUnit.SECONDS, new SynchronousQueue<Runnable>());
+        }
+
+        @Override
+        protected void beforeExecute(Thread t, Runnable r) {
+            if (r instanceof Thread) {
+                Thread thread = (Thread) r;
+                if (thread.getName() != null) {
+                    t.setName("Engine:: " + thread.getName());
+                }
+            }
+            super.beforeExecute(t, r);
         }
     }
 }
