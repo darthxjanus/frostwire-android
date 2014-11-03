@@ -379,14 +379,14 @@
     <string name="connected_using_dataplan">Spojeno putem podatkovnog plana</string>
     <string name="tip_rename_your_files">Savjet: Preimenujte datoteke tako da se mogu naci</string>
     <string name="input_text_hint">Sto trazite? (savjeti od Google-a)</string>
-    <string name="sdcard_storage">SD skladiste</string>
-    <string name="invalid_torrent_file">Nevazeca Torrent datoteka</string>
-    <string name="activity_media_player_name">Svirac medija</string>
+    <string name="sdcard_storage">SD skladište</string>
+    <string name="invalid_torrent_file">Nevažeća Torrent datoteka</string>
+    <string name="activity_media_player_name">Svirač medija</string>
     <string name="context_menu_open_in_play_store">Otvori u Play Store-u</string>
-    <string name="failed_to_add_download">Nije moguce dodati preuzimanje</string>
+    <string name="failed_to_add_download">Nije moguće dodati preuzimanje</string>
     <string name="my_filetype">Moje %s</string>
     <string name="torrent_max_download_speed_summary">Maksimalna brzina preuzimanja</string>
-    <string name="android_will_erase_files_if_frostwire_is_uninstalled">Android will erase downloaded files if FrostWire is uninstalled.</string>
+    <string name="android_will_erase_files_if_frostwire_is_uninstalled">Android će obrisati preuzete datoteke ako je FrostWire deinstaliran.</string>
     <string name="use_torrentsfm_summary">Torrents.fm je baziran na magnetu, radi samo na Wi-Fi-u</string>
-    <string name="device_memory">Memorija uredjaja</string>
+    <string name="device_memory">Memorija uređaja</string>
 </resources>
